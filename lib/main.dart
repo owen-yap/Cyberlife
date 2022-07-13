@@ -37,12 +37,9 @@ enum Status {
 }
 
 class PainSticker extends StatefulWidget {
-  const PainSticker({Key? key, required this.degree, this.x = 0,
-    this.y = 0, this.scale = 3.0, this.draggable = true, required this.appBarHeight}) : super(key: key);
+  const PainSticker({Key? key, required this.degree, this.scale = 3.0, this.draggable = true, this.appBarHeight = 0}) : super(key: key);
 
   final Status degree;
-  final double x;
-  final double y;
   final double scale;
   final bool draggable;
   final double appBarHeight;
@@ -58,14 +55,13 @@ class PainSticker extends StatefulWidget {
 
     return base;
   }
-
-
 }
 
 class _PainStickerState extends State<PainSticker> {
 
-  double _x = 100;
-  double _y = 100;
+  double _x = 155;
+  double _y = 200;
+  bool delete = false;
 
   @override
   Widget build(BuildContext context) {
@@ -75,34 +71,32 @@ class _PainStickerState extends State<PainSticker> {
         top: _y,
         child: Draggable<String>(
           data: 'hi',
-          feedback: Container(
-            child: Center(
-              child: Image.asset(widget.getAsset(), scale: widget.scale),
-            ),
+          feedback: Center(
+            child: Image.asset(widget.getAsset(), scale: widget.scale),
           ),
           childWhenDragging: Container(),
           onDragEnd: (dragDetails) {
             setState(() {
-              //print(dragDetails.offset.dy);
               _x = dragDetails.offset.dx;
               _y = dragDetails.offset.dy - widget.appBarHeight - MediaQueryData.fromWindow(window).padding.top;
-              if (_y < -20) _y = -20;
-              else if (_y > 500) _y = 500;
+              if (_y < 0) { _y = 0; }
+              else if (_y > 480) { _y = 480; }
+              if (_x > 320 && _y < 30) {
+                delete = true;
+              }
+              //print(_x);
+              //print(_y);
               //print(MediaQuery.of(context).viewPadding.top);
             });
           },
-          child: Container(
-            child: Center(
-              child: Image.asset(widget.getAsset(), scale: widget.scale),
-            ),
+          child: Center(
+            child: Image.asset(widget.getAsset(), scale: widget.scale),
           ),
-        )
+        ),
       );
     } else {
-      return Container(
-        child: Center(
+      return Center(
           child: Image.asset(widget.getAsset(), scale: widget.scale),
-        ),
       );
     }
   }
@@ -110,14 +104,26 @@ class _PainStickerState extends State<PainSticker> {
 
 class _PainMapState extends State<PainMap> {
 
+
   List<Widget> widgetList = <Widget>[
     Container(
       margin: const EdgeInsets.only(top: 40.0),
       child: Image.asset("assets/images/png/silhouette.png"),
+    ),
+    Positioned(
+      right: 20,
+      top: 20,
+      child: Center(child: Image.asset("assets/images/png/trash.png", scale: 2.0))
     )
   ];
 
   List<Widget> _createChildren() {
+    for (var item in widgetList) {
+      print(item);
+      if (item is PainSticker) {
+        PainSticker cur =  item as PainSticker;
+      }
+    }
     return widgetList;
   }
 
@@ -127,6 +133,8 @@ class _PainMapState extends State<PainMap> {
       widgetList.add(PainSticker(degree: item, draggable: true, appBarHeight: height));
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -139,51 +147,79 @@ class _PainMapState extends State<PainMap> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              width: 500,
-              height: 500,
+            Expanded(
               child: Stack(
                 children: _createChildren()
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row( // Bottom Row
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            _addSticker(Status.red, appBar.preferredSize.height);
+                          },
+                          child: const PainSticker(degree: Status.red, scale: 1.0, draggable: false),
+                        )
+                      ),
+                      const Text("Sharp, Electric Pain", textAlign: TextAlign.center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            _addSticker(Status.green, appBar.preferredSize.height);
+                          },
+                          child: const PainSticker(degree: Status.green, scale: 1.0, draggable: false),
+                        ),
+                      ),
+                      const Text("Aching, Throbbing Pain", textAlign: TextAlign.center), // "Musculoskeletal pain"
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: PopupMenuButton<Status>(
+      /* floatingActionButton: PopupMenuButton<Status>(
         onSelected: (Status item) {
           _addSticker(item, appBar.preferredSize.height);
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<Status>>[
           PopupMenuItem<Status>(
             value: Status.red,
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              child: PainSticker(degree: Status.red, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
-            ),
-          ),
-          PopupMenuItem<Status>(
-            value: Status.orange,
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              child: PainSticker(degree: Status.orange, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
-            ),
-          ),
-          PopupMenuItem<Status>(
-            value: Status.yellow,
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              child: PainSticker(degree: Status.yellow, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: PainSticker(degree: Status.red, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
+                ),
+                const Text("Sharp, Electric Pain", textAlign: TextAlign.center)], // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
             ),
           ),
           PopupMenuItem<Status>(
             value: Status.green,
-            child: Container(
-              padding: const EdgeInsets.all(10.0),
-              child: PainSticker(degree: Status.green, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: PainSticker(degree: Status.green, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
+                ),
+                const Text("Aching, Throbbing Pain", textAlign: TextAlign.center)], // "Musculoskeletal pain"
             ),
           ),
         ]
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ), // This trailing comma makes auto-formatting nicer for build methods. */
     );
   }
 }

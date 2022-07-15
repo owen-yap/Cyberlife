@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:775113187555:android:0e1cc74e594491ad8465d6",
         "android_client_info": {
-          "package_name": "com.example.untitled"
+          "package_name": "com.example.cyberlife"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "775113187555-n9p6nd69cd05i4u2esa5m6pfd734750h.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.untitled"
+                "bundle_id": "com.example.cyberlife"
               }
             }
           ]

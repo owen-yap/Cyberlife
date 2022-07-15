@@ -47,12 +47,13 @@ class PainSticker extends StatelessWidget {
           onDragEnd: (dragDetails) {
               double _x = dragDetails.offset.dx;
               double _y = dragDetails.offset.dy - appBarHeight - MediaQueryData.fromWindow(window).padding.top;
+              double width = MediaQuery.of(context).size.width;
               if (_y < 0) { _y = 0; }
               else if (_y > 480) { _y = 480; }
 
               PainSticker newPS = PainSticker(degree: degree, scale: scale, draggable: true, x: _x, y: _y);
 
-              if (_x > 320 && _y < 30) {
+              if (_x > width - 60 && _y < 60) {
                 PainStickerNotification(newPS: newPS, oldPS: this, delete: true).dispatch(context);
               } else {
                 PainStickerNotification(newPS: newPS, oldPS: this).dispatch(context);

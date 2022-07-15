@@ -2,7 +2,9 @@
 
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:cyberlife/providers/pain_sticker_notification.dart';
 import 'package:cyberlife/widgets/pain_sticker.dart';
+import 'package:cyberlife/models/pain_sticker_list.dart';
 
 class PainMap extends StatefulWidget {
   const PainMap({Key? key}) : super(key: key);
@@ -15,33 +17,20 @@ class PainMap extends StatefulWidget {
 
 class _PainMapState extends State<PainMap> {
 
+  PainStickerList psList = PainStickerList();
 
-  List<Widget> widgetList = <Widget>[
-    Container(
-      margin: const EdgeInsets.only(top: 40.0),
-      child: Image.asset("assets/images/png/silhouette.png"),
-    ),
-    Positioned(
-        right: 20,
-        top: 20,
-        child: Center(child: Image.asset("assets/images/png/trash.png", scale: 2.0))
-    )
-  ];
-
-  List<Widget> _createChildren() {
-    for (var item in widgetList) {
-      //print(item);
-      if (item is PainSticker) {
-        PainSticker cur =  item;
-      }
-    }
-    return widgetList;
+  void _addSticker(Status item, int offset) {
+    setState(() {
+      psList.add(item, offset);
+    });
   }
 
-  void _addSticker(Status item, double height) {
-
+  void handleNotification(PainStickerNotification notification) {
     setState(() {
-      widgetList.add(PainSticker(degree: item, draggable: true, appBarHeight: height));
+      psList.remove(notification.oldPS);
+      if (!notification.delete) {
+        psList.addPS(notification.newPS);
+      }
     });
   }
 
@@ -57,8 +46,14 @@ class _PainMapState extends State<PainMap> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-              child: Stack(
-                  children: _createChildren()
+              child: NotificationListener<PainStickerNotification>(
+                onNotification: (notification) {
+                  handleNotification(notification);
+                  return true;
+                },
+                child: Stack(
+                  children: psList.generateList(),
+                ),
               ),
             ),
             Padding(
@@ -72,9 +67,9 @@ class _PainMapState extends State<PainMap> {
                           padding: const EdgeInsets.all(10.0),
                           child: GestureDetector(
                             onTap: () {
-                              _addSticker(Status.red, appBar.preferredSize.height);
+                              _addSticker(Status.red, psList.length());
                             },
-                            child: const PainSticker(degree: Status.red, scale: 1.0, draggable: false),
+                            child: const PainSticker(degree: Status.red, scale: 1.0, x: 0, y: 0, draggable: false),
                           )
                       ),
                       const Text("Sharp, Electric Pain", textAlign: TextAlign.center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
@@ -86,9 +81,9 @@ class _PainMapState extends State<PainMap> {
                         padding: const EdgeInsets.all(10.0),
                         child: GestureDetector(
                           onTap: () {
-                            _addSticker(Status.green, appBar.preferredSize.height);
+                            _addSticker(Status.green, psList.length());
                           },
-                          child: const PainSticker(degree: Status.green, scale: 1.0, draggable: false),
+                          child: const PainSticker(degree: Status.green, scale: 1.0, x: 0, y: 0, draggable: false),
                         ),
                       ),
                       const Text("Aching, Throbbing Pain", textAlign: TextAlign.center), // "Musculoskeletal pain"

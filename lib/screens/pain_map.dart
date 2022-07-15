@@ -95,35 +95,6 @@ class _PainMapState extends State<PainMap> {
           ],
         ),
       ),
-      /* floatingActionButton: PopupMenuButton<Status>(
-        onSelected: (Status item) {
-          _addSticker(item, appBar.preferredSize.height);
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<Status>>[
-          PopupMenuItem<Status>(
-            value: Status.red,
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: PainSticker(degree: Status.red, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
-                ),
-                const Text("Sharp, Electric Pain", textAlign: TextAlign.center)], // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
-            ),
-          ),
-          PopupMenuItem<Status>(
-            value: Status.green,
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: PainSticker(degree: Status.green, scale: 1.0, draggable: false, appBarHeight: appBar.preferredSize.height),
-                ),
-                const Text("Aching, Throbbing Pain", textAlign: TextAlign.center)], // "Musculoskeletal pain"
-            ),
-          ),
-        ]
-      ), // This trailing comma makes auto-formatting nicer for build methods. */
     );
   }
 }

@@ -48,6 +48,7 @@ class PainSticker extends StatelessWidget {
               double _x = dragDetails.offset.dx;
               double _y = dragDetails.offset.dy - appBarHeight - MediaQueryData.fromWindow(window).padding.top;
               double width = MediaQuery.of(context).size.width;
+              
               if (_y < 0) { _y = 0; }
               else if (_y > 480) { _y = 480; }
 

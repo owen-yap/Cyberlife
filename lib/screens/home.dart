@@ -4,6 +4,7 @@ import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/screens/pain_map.dart';
 import 'package:cyberlife/screens/joint_motor_function.dart';
+import 'package:cyberlife/screens/camera.dart';
 
 
 class Home extends StatelessWidget {
@@ -33,6 +34,14 @@ class Home extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context, MaterialPageRoute(builder: (context) => const JointMotorFunction())
+                );
+              },
+            ),
+            ElevatedButton(
+              child: const Text("Camera"),
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const Camera())
                 );
               },
             ),

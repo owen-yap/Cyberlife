@@ -17,8 +17,10 @@ class PainMap extends StatefulWidget {
 
 class _PainMapState extends State<PainMap> {
   PainStickerList psList = PainStickerList();
+
   late List<Widget> stickerWidgets = Status.values.map((status) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
             padding: const EdgeInsets.all(10.0),
@@ -26,13 +28,20 @@ class _PainMapState extends State<PainMap> {
               onTap: () {
                 _addSticker(status, psList.length());
               },
-              child: PainSticker(degree: status, scale: 2.0, x: 0, y: 0, draggable: false),
+              child: PainSticker(degree: status, scale: 4.0, x: 0, y: 0, draggable: false),
             )
         ),
          Text(status.name, textAlign: TextAlign.center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
       ],
     );
   }).toList();
+
+  late Positioned stickerWidgetsPositioned = Positioned(
+    left: 0,
+      child: Column(
+        children: stickerWidgets,
+      )
+  );
 
   void _addSticker(Status item, int offset) {
     setState(() {
@@ -55,8 +64,8 @@ class _PainMapState extends State<PainMap> {
     return Scaffold(
       appBar: appBar,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Stack(
+          // mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
               child: NotificationListener<PainStickerNotification>(
@@ -69,13 +78,7 @@ class _PainMapState extends State<PainMap> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row( // Bottom Row
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: stickerWidgets,
-              ),
-            ),
+            stickerWidgetsPositioned,
           ],
         ),
       ),

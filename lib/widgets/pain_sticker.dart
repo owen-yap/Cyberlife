@@ -5,14 +5,14 @@ import 'package:cyberlife/providers/pain_sticker_notification.dart';
 import 'dart:ui';
 
 enum Status {
-  red,
-  orange,
-  yellow,
-  green
+  pain,
+  numb,
+  pins,
+  misc
 }
 
 class PainSticker extends StatelessWidget {
-  const PainSticker({Key? key, required this.degree, required this.x , required this.y, this.scale = 3.0, this.draggable = true}) : super(key: key);
+  const PainSticker({Key? key, required this.degree, required this.x , required this.y, this.scale = 5.0, this.draggable = true}) : super(key: key);
 
   final Status degree;
   final double scale;
@@ -22,10 +22,10 @@ class PainSticker extends StatelessWidget {
 
   String getAsset() {
     String base = "assets/images/png/";
-    if (degree == Status.red) { base += "starRed.png"; }
-    else if (degree == Status.orange) { base += "starOrange.png"; }
-    else if (degree == Status.yellow) { base += "starYellow.png"; }
-    else if (degree == Status.green) { base += "starGreen.png"; }
+    if (degree == Status.pain) { base += "painSticker.png"; }
+    else if (degree == Status.numb) { base += "numbSticker.png"; }
+    else if (degree == Status.pins) { base += "pinsSticker.png"; }
+    else if (degree == Status.misc) { base += "miscSticker.png"; }
 
     return base;
   }

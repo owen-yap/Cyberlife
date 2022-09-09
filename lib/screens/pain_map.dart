@@ -16,8 +16,23 @@ class PainMap extends StatefulWidget {
 }
 
 class _PainMapState extends State<PainMap> {
-
   PainStickerList psList = PainStickerList();
+  late List<Widget> stickerWidgets = Status.values.map((status) {
+    return Column(
+      children: [
+        Container(
+            padding: const EdgeInsets.all(10.0),
+            child: GestureDetector(
+              onTap: () {
+                _addSticker(status, psList.length());
+              },
+              child: PainSticker(degree: status, scale: 2.0, x: 0, y: 0, draggable: false),
+            )
+        ),
+         Text(status.name, textAlign: TextAlign.center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
+      ],
+    );
+  }).toList();
 
   void _addSticker(Status item, int offset) {
     setState(() {
@@ -33,8 +48,6 @@ class _PainMapState extends State<PainMap> {
       }
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,36 +73,7 @@ class _PainMapState extends State<PainMap> {
               padding: const EdgeInsets.all(10.0),
               child: Row( // Bottom Row
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    children: [
-                      Container(
-                          padding: const EdgeInsets.all(10.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              _addSticker(Status.red, psList.length());
-                            },
-                            child: const PainSticker(degree: Status.red, scale: 1.0, x: 0, y: 0, draggable: false),
-                          )
-                      ),
-                      const Text("Sharp, Electric Pain", textAlign: TextAlign.center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            _addSticker(Status.green, psList.length());
-                          },
-                          child: const PainSticker(degree: Status.green, scale: 1.0, x: 0, y: 0, draggable: false),
-                        ),
-                      ),
-                      const Text("Aching, Throbbing Pain", textAlign: TextAlign.center), // "Musculoskeletal pain"
-                    ],
-                  ),
-                ],
+                children: stickerWidgets,
               ),
             ),
           ],

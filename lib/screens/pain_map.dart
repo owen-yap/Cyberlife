@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
-
 import 'package:cyberlife/widgets/appbar.dart';
+import 'package:cyberlife/widgets/pain_submap.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/providers/pain_sticker_notification.dart';
 import 'package:cyberlife/widgets/pain_sticker.dart';
@@ -17,6 +17,16 @@ class PainMap extends StatefulWidget {
 
 class _PainMapState extends State<PainMap> {
   PainStickerList psList = PainStickerList();
+  static const tabBar = TabBar(
+      labelColor: Colors.black,
+      unselectedLabelColor: Colors.white,
+      tabs: [
+        Tab(text: "Front"),
+        Tab(text: "Back"),
+        Tab(text: "Side (L)"),
+        Tab(text: "Side (R)"),
+      ],
+      );
 
   late List<Widget> stickerWidgets = Status.values.map((status) {
     return Column(
@@ -28,20 +38,21 @@ class _PainMapState extends State<PainMap> {
               onTap: () {
                 _addSticker(status, psList.length());
               },
-              child: PainSticker(degree: status, scale: 4.0, x: 0, y: 0, draggable: false),
-            )
-        ),
-         Text(status.name, textAlign: TextAlign.center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
+              child: PainSticker(
+                  degree: status, scale: 4.0, x: 0, y: 0, draggable: false),
+            )),
+        Text(status.name,
+            textAlign: TextAlign
+                .center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
       ],
     );
   }).toList();
 
   late Positioned stickerWidgetsPositioned = Positioned(
-    left: 0,
+      left: 0,
       child: Column(
         children: stickerWidgets,
-      )
-  );
+      ));
 
   void _addSticker(Status item, int offset) {
     setState(() {
@@ -73,9 +84,18 @@ class _PainMapState extends State<PainMap> {
                   handleNotification(notification);
                   return true;
                 },
-                child: Stack(
-                  children: psList.generateList(),
-                ),
+                child: DefaultTabController(
+                    length: 4,
+                    initialIndex: 0,
+                    child: Stack(children: [
+                      tabBar,
+                      TabBarView(children: [
+                        PainSubmap(label: 'Front', psList: psList),
+                        PainSubmap(label: 'Back', psList: psList),
+                        PainSubmap(label: 'Left', psList: psList),
+                        PainSubmap(label: 'Right', psList: psList)
+                      ])
+                    ])),
               ),
             ),
             stickerWidgetsPositioned,

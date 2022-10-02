@@ -62,17 +62,15 @@ class _PainMapState extends State<PainMap> {
                   handleNotification(notification);
                   return true;
                 },
-                child: Screenshot(
-                  controller: screenshotController,
-                  child: Stack(
-                    children: psList.generateList(),
-                  ),
+                child: Stack(
+                  children: psList.generateList(screenshotController),
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Row( // Bottom Row
+              child: Row(
+                // Bottom Row
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Column(
@@ -83,10 +81,15 @@ class _PainMapState extends State<PainMap> {
                             onTap: () {
                               _addSticker(Status.red, psList.length());
                             },
-                            child: const PainSticker(degree: Status.red, scale: 2.0, x: 0, y: 0, draggable: false),
-                          )
-                      ),
-                      const Text("Sharp", textAlign: TextAlign.center) // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
+                            child: const PainSticker(
+                                degree: Status.red,
+                                scale: 2.0,
+                                x: 0,
+                                y: 0,
+                                draggable: false),
+                          )),
+                      const Text("Sharp", textAlign: TextAlign.center)
+                      // "Neuropathic pain: Sharp, Electric, Shooting, Stabbing"
                     ],
                   ),
                   Column(
@@ -97,10 +100,16 @@ class _PainMapState extends State<PainMap> {
                           onTap: () {
                             _addSticker(Status.green, psList.length());
                           },
-                          child: const PainSticker(degree: Status.green, scale: 2.0, x: 0, y: 0, draggable: false),
+                          child: const PainSticker(
+                              degree: Status.green,
+                              scale: 2.0,
+                              x: 0,
+                              y: 0,
+                              draggable: false),
                         ),
                       ),
-                      const Text("Aching", textAlign: TextAlign.center), // "Musculoskeletal pain"
+                      const Text("Aching", textAlign: TextAlign.center),
+                      // "Musculoskeletal pain"
                     ],
                   ),
                   IconButton(

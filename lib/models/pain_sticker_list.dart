@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cyberlife/widgets/pain_sticker.dart';
+import 'package:screenshot/screenshot.dart';
 
 class PainStickerList {
   double defaultX = 175;
@@ -20,11 +21,19 @@ class PainStickerList {
       child: Center(child: Image.asset("assets/images/png/trash.png", scale: 2.0))
   );
 
-  List<Widget> generateList() {
+  List<Widget> generateList(ScreenshotController screenshotController) {
     List<Widget> widgetList = <Widget>[];
     widgetList.insert(0, silhouette);
-    widgetList.insert(0, trash);
     widgetList += psList;
+    Widget stack = Screenshot(
+        controller: screenshotController,
+        child: Stack(
+          children: widgetList,
+        )
+    );
+    widgetList = <Widget>[];
+    widgetList.insert(0, stack);
+    widgetList.insert(0, trash);
     return widgetList;
   }
 

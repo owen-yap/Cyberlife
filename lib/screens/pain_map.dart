@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 import 'package:cyberlife/widgets/appbar.dart';
+import 'package:cyberlife/widgets/colored_tabbar.dart';
 import 'package:cyberlife/widgets/pain_submap.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/providers/pain_sticker_notification.dart';
@@ -18,15 +19,15 @@ class PainMap extends StatefulWidget {
 class _PainMapState extends State<PainMap> {
   PainStickerList psList = PainStickerList();
   static const tabBar = TabBar(
-      labelColor: Colors.black,
-      unselectedLabelColor: Colors.white,
-      tabs: [
-        Tab(text: "Front"),
-        Tab(text: "Back"),
-        Tab(text: "Side (L)"),
-        Tab(text: "Side (R)"),
-      ],
-      );
+    labelColor: Colors.black,
+    unselectedLabelColor: Colors.white,
+    tabs: [
+      Tab(text: "Front"),
+      Tab(text: "Back"),
+      Tab(text: "Side (L)"),
+      Tab(text: "Side (R)"),
+    ],
+  );
 
   late List<Widget> stickerWidgets = Status.values.map((status) {
     return Column(
@@ -50,6 +51,7 @@ class _PainMapState extends State<PainMap> {
 
   late Positioned stickerWidgetsPositioned = Positioned(
       left: 0,
+      top: 40,
       child: Column(
         children: stickerWidgets,
       ));
@@ -87,15 +89,14 @@ class _PainMapState extends State<PainMap> {
                 child: DefaultTabController(
                     length: 4,
                     initialIndex: 0,
-                    child: Stack(children: [
-                      tabBar,
-                      TabBarView(children: [
-                        PainSubmap(label: 'Front', psList: psList),
-                        PainSubmap(label: 'Back', psList: psList),
-                        PainSubmap(label: 'Left', psList: psList),
-                        PainSubmap(label: 'Right', psList: psList)
-                      ])
-                    ])),
+                    child: Scaffold(
+                        appBar: const ColoredTabBar(tb: tabBar),
+                        body: TabBarView(children: [
+                          PainSubmap(label: 'Front', psList: psList),
+                          PainSubmap(label: 'Back', psList: psList),
+                          PainSubmap(label: 'Left', psList: psList),
+                          PainSubmap(label: 'Right', psList: psList)
+                        ]))),
               ),
             ),
             stickerWidgetsPositioned,

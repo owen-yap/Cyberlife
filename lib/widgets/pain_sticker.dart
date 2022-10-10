@@ -33,6 +33,11 @@ class PainSticker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double appBarHeight = AppBar().preferredSize.height;
+    double tabBarHeight = const TabBar(
+      tabs: [
+        Tab(text: "dummy text"),
+      ],
+    ).preferredSize.height;
 
     if (draggable) {
       return Positioned(
@@ -46,7 +51,7 @@ class PainSticker extends StatelessWidget {
           childWhenDragging: Container(),
           onDragEnd: (dragDetails) {
               double _x = dragDetails.offset.dx;
-              double _y = dragDetails.offset.dy - appBarHeight - MediaQueryData.fromWindow(window).padding.top;
+              double _y = dragDetails.offset.dy - appBarHeight - tabBarHeight - MediaQueryData.fromWindow(window).padding.top;
               double width = MediaQuery.of(context).size.width;
               
               if (_y < 0) { _y = 0; }

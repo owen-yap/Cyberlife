@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:cyberlife/widgets/pain_sticker.dart';
+import 'package:screenshot/screenshot.dart';
 
 class PainStickerList {
   double defaultX = 175;
@@ -40,17 +43,36 @@ class PainStickerList {
       child: Center(
           child: Image.asset("assets/images/png/trash.png", scale: 2.0)));
 
-  List<Widget> generateList(label) {
+  List<Widget> generateList(label, ScreenshotController screenshotController) {
     List<Widget> widgetList = <Widget>[];
-    label == 'Front'
-        ? widgetList.insert(0, frontMap)
-        : label == 'Back'
-            ? widgetList.insert(0, backMap)
-            : label == 'Right'
-                ? widgetList.insert(0, rightMap)
-                : widgetList.insert(0, leftMap);
-    widgetList.insert(0, trash);
+    switch (label) {
+      case 'Front':
+        widgetList.insert(0, frontMap);
+        break;
+      case 'Back':
+        widgetList.insert(0, backMap);
+        break;
+      case 'Right':
+        widgetList.insert(0, rightMap);
+        break;
+      case 'Left':
+        widgetList.insert(0, leftMap);
+        break;
+      default:
+        return widgetList;
+    }
     widgetList += psList;
+
+    Widget stack = Screenshot(
+        controller: screenshotController,
+        child: Stack(
+          children: widgetList,
+        )
+    );
+
+    widgetList = <Widget>[];
+    widgetList.insert(0, stack);
+    widgetList.insert(0, trash);
     return widgetList;
   }
 
@@ -63,7 +85,8 @@ class PainStickerList {
         degree: item,
         draggable: true,
         x: defaultX + offset * 3,
-        y: defaultY + offset * 3));
+        y: defaultY + offset * 3)
+    );
   }
 
   void addPS(PainSticker ps) {

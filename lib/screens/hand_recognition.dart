@@ -27,7 +27,7 @@ class _HandRecognitionState extends State<HandRecognition> {
       body: Stack(
         children: <Widget>[
           CameraView(pointsCallback: pointsCallback, imageCallback: imageCallback),
-          //drawDebugPicture(), // debug for printing image
+          drawDebugPicture(), // debug for printing image
           drawLandmark(),
         ]
       )

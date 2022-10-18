@@ -3,7 +3,6 @@ import 'dart:isolate';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:cyberlife/tflite/hand_detection.dart';
-import 'package:cyberlife/tflite/palm_detection.dart';
 import 'package:cyberlife/utilities/image_utils.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -33,15 +32,12 @@ class IsolateUtils {
 
     await for (final IsolateData isolateData in port) {
       if (isolateData != null) {
-        PalmDetection palmDetector = PalmDetection.fromInterpreter(
-            interpreter: Interpreter.fromAddress(isolateData.palmInterpreterAddress));
         HandDetection handDetector = HandDetection.fromInterpreter(
             interpreter: Interpreter.fromAddress(isolateData.handInterpreterAddress));
 
         imageLib.Image image =
             ImageUtils.convertCameraImage(isolateData.cameraImage);
 
-        await palmDetector.predict(image);
         List<double> results = await handDetector.predict(image);
         isolateData.responsePort!.send(results);
       }
@@ -52,13 +48,11 @@ class IsolateUtils {
 /// Bundles data to pass between Isolate
 class IsolateData {
   CameraImage cameraImage;
-  int palmInterpreterAddress;
   int handInterpreterAddress;
   SendPort? responsePort;
 
   IsolateData(
     this.cameraImage,
-    this.palmInterpreterAddress,
     this.handInterpreterAddress,
   );
 }

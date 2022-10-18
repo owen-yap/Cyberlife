@@ -1,9 +1,11 @@
 import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as imageLib;
 import 'package:cyberlife/tflite/hand_detection.dart';
-import 'package:cyberlife/tflite/palm_detection.dart';
+import 'package:cyberlife/utilities/image_utils.dart';
 import 'package:cyberlife/utilities/isolate_utils.dart';
 
 class CameraView extends StatefulWidget {
@@ -14,8 +16,6 @@ class CameraView extends StatefulWidget {
   final Function(Image image) imageCallback;
 
   const CameraView({required this.pointsCallback, required this.imageCallback, Key? key}) : super(key: key);
-
-
 
   final String title = "Camera";
 
@@ -29,7 +29,6 @@ class _CameraViewState extends State<CameraView> {
   late List<CameraDescription> cameras;
   late String err;
   late HandDetection handDetector;
-  late PalmDetection palmDetector;
   late IsolateUtils isolateUtils;
   bool processing = false;
 
@@ -55,7 +54,6 @@ class _CameraViewState extends State<CameraView> {
   void initStateAsync() async {
     isolateUtils = IsolateUtils();
     await isolateUtils.start();
-    palmDetector = PalmDetection();
     handDetector = HandDetection();
     initCamera();
   }
@@ -77,7 +75,7 @@ class _CameraViewState extends State<CameraView> {
   }
 
   void onLatestImageAvailable(CameraImage cameraImage) async {
-    if (processing || palmDetector.interpreter == null || handDetector.interpreter == null) {
+    if (processing || handDetector.interpreter == null) {
       return;
     }
 
@@ -86,15 +84,18 @@ class _CameraViewState extends State<CameraView> {
     });
 
     IsolateData isolateData = IsolateData(
-        cameraImage, palmDetector.interpreter!.address,
-        handDetector.interpreter!.address);
+        cameraImage, handDetector.interpreter!.address);
 
     List<double> pointList = await inference(isolateData);
     widget.pointsCallback(pointList);
 
     //debug for printing image
-    widget.imageCallback(palmDetector.getPicture(cameraImage));
-    await Future.delayed(Duration(milliseconds: 200));
+
+    imageLib.Image debugImage = ImageUtils.convertCameraImage(cameraImage);
+    debugImage = imageLib.copyResizeCropSquare(debugImage, 224);
+    widget.imageCallback(Image.memory(
+        imageLib.encodeJpg(debugImage) as Uint8List));
+    await Future.delayed(Duration(milliseconds: 100));
 
     setState(() {
       processing = false;

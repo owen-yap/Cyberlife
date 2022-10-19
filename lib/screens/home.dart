@@ -4,7 +4,7 @@ import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/screens/pain_map.dart';
 import 'package:cyberlife/screens/joint_motor_function.dart';
-import 'package:cyberlife/screens/hand_recognition.dart';
+import 'package:cyberlife/screens/open_close.dart';
 
 
 class Home extends StatelessWidget {
@@ -38,10 +38,10 @@ class Home extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              child: const Text("Hand Recognition"),
+              child: const Text("Open-Close Test"),
               onPressed: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const HandRecognition())
+                    context, MaterialPageRoute(builder: (context) => const OpenClose())
                 );
               },
             ),

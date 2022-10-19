@@ -133,8 +133,18 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     }
 
     Widget cameraElement = AspectRatio(
-      aspectRatio: 1 / cameraController.value.aspectRatio,
-      child: CameraPreview(cameraController),
+      aspectRatio: 1,
+      child: ClipRect(
+        child: Transform.scale(
+          scale: cameraController.value.aspectRatio,
+          child: Center(
+            child: AspectRatio(
+              aspectRatio: 1 / cameraController.value.aspectRatio,
+              child: CameraPreview(cameraController),
+            ),
+          ),
+        ),
+      ),
     );
 
     return cameraElement;

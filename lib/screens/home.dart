@@ -25,7 +25,7 @@ class Home extends StatelessWidget {
               child: const Text("Pain Map"),
               onPressed: () {
                 Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const PainMap())
+                  context, MaterialPageRoute(builder: (context) => PainMap(key: UniqueKey()))
                 );
               },
             ),

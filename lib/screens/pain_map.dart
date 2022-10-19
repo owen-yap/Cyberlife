@@ -27,7 +27,9 @@ class _PainMapState extends State<PainMap> {
   //Create an instance of ScreenshotController
   ScreenshotController screenshotController = ScreenshotController();
 
-  PainStickerList psList = PainStickerList();
+  List<PainStickerList> psLists = [PainStickerList(), PainStickerList(), PainStickerList(), PainStickerList()];
+  var currTabIndex = 0;
+
   static const tabBar = TabBar(
     labelColor: Colors.black,
     unselectedLabelColor: Colors.white,
@@ -47,7 +49,7 @@ class _PainMapState extends State<PainMap> {
             padding: const EdgeInsets.all(10.0),
             child: GestureDetector(
               onTap: () {
-                _addSticker(status, psList.length());
+                _addSticker(status, psLists[currTabIndex]);
               },
               child: PainSticker(
                   degree: status, scale: 4.0, x: 0, y: 0, draggable: false),
@@ -79,17 +81,17 @@ class _PainMapState extends State<PainMap> {
         },
       ));
 
-  void _addSticker(Status item, int offset) {
+  void _addSticker(Status item, PainStickerList psList) {
     setState(() {
-      psList.add(item, offset);
+      psList.add(item);
     });
   }
 
   void handleNotification(PainStickerNotification notification) {
     setState(() {
-      psList.remove(notification.oldPS);
+      psLists[currTabIndex].remove(notification.oldPS);
       if (!notification.delete) {
-        psList.addPS(notification.newPS);
+        psLists[currTabIndex].addPS(notification.newPS);
       }
     });
   }
@@ -118,33 +120,43 @@ class _PainMapState extends State<PainMap> {
                             return true;
                           },
                           child: DefaultTabController(
-                              length: 4,
-                              initialIndex: 0,
-                              child: Scaffold(
-                                  appBar: const ColoredTabBar(tb: tabBar),
-                                  body: TabBarView(children: [
-                                    PainSubmap(
-                                        label: 'Front',
-                                        psList: psList,
-                                        screenshotController: screenshotController),
-                                    PainSubmap(
-                                        label: 'Back',
-                                        psList: psList,
-                                        screenshotController: screenshotController),
-                                    PainSubmap(
-                                        label: 'Left',
-                                        psList: psList,
-                                        screenshotController: screenshotController),
-                                    PainSubmap(
-                                        label: 'Right',
-                                        psList: psList,
-                                        screenshotController: screenshotController)
-                                  ]))),
+                            length: 4,
+                            initialIndex: 0,
+                            child: Builder(builder: (BuildContext context) {
+                              final TabController controller = DefaultTabController.of(context)!;
+                              controller.addListener(() {
+                                if (!controller.indexIsChanging) {
+                                  currTabIndex = controller.index;
+                                }
+                              });
+                              return Scaffold(
+                                appBar: const ColoredTabBar(tb: tabBar),
+                                body: TabBarView(children: [
+                                  PainSubmap(
+                                    label: 'Front',
+                                    psList: psLists[0],
+                                    screenshotController: screenshotController),
+                                  PainSubmap(
+                                    label: 'Back',
+                                    psList: psLists[1],
+                                    screenshotController: screenshotController),
+                                  PainSubmap(
+                                    label: 'Left',
+                                    psList: psLists[2],
+                                    screenshotController: screenshotController),
+                                  PainSubmap(
+                                    label: 'Right',
+                                    psList: psLists[3],
+                                    screenshotController: screenshotController)
+                                  ]),
+                              );
+                            })
+                          ),
                         ),
-                    )
-                  ]),
-                  stickerWidgetsPositioned,
-                  screenshotButton
+                      )
+                    ]),
+                    stickerWidgetsPositioned,
+                    screenshotButton
                 ])));
   }
 }

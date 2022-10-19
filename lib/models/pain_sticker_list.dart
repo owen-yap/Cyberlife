@@ -80,7 +80,8 @@ class PainStickerList {
     return psList.length;
   }
 
-  void add(Status item, int offset) {
+  void add(Status item) {
+    int offset = psList.length;
     psList.add(PainSticker(
         degree: item,
         draggable: true,

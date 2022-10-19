@@ -11,6 +11,37 @@ enum Status {
   misc
 }
 
+class PainModal extends StatefulWidget {
+  const PainModal({super.key});
+
+  @override
+  State<StatefulWidget> createState() => PainModalState();
+
+}
+
+class PainModalState extends State<PainModal> {
+  double painLevel = 0;
+  @override
+  Widget build(BuildContext context) {
+      return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius:BorderRadius.circular(20.0)),
+            child: Container(
+            constraints: const BoxConstraints(maxHeight: 350),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Slider(value: painLevel, max: 10, divisions: 10, label: painLevel.round().toString(),
+      onChanged: (double value) {
+        setState(() {
+          painLevel = value;
+        });
+      })]))));
+  }
+
+}
 class PainSticker extends StatelessWidget {
   const PainSticker({Key? key, required this.degree, required this.x , required this.y, this.scale = 5.0, this.draggable = true}) : super(key: key);
 
@@ -19,6 +50,7 @@ class PainSticker extends StatelessWidget {
   final bool draggable;
   final double x;
   final double y;
+  double painLevel;
 
   String getAsset() {
     String base = "assets/images/png/";
@@ -28,6 +60,15 @@ class PainSticker extends StatelessWidget {
     else if (degree == Status.misc) { base += "miscSticker.png"; }
 
     return base;
+  }
+  
+  _showStickerModal(context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const PainModal();
+    }
+    );
   }
 
   @override

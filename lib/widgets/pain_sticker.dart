@@ -50,7 +50,6 @@ class PainSticker extends StatelessWidget {
   final bool draggable;
   final double x;
   final double y;
-  double painLevel;
 
   String getAsset() {
     String base = "assets/images/png/";
@@ -105,6 +104,8 @@ class PainSticker extends StatelessWidget {
               } else {
                 PainStickerNotification(newPS: newPS, oldPS: this).dispatch(context);
               }
+
+              _showStickerModal(context);
           },
           child: Center(
             child: Image.asset(getAsset(), scale: scale),

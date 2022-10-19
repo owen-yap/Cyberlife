@@ -105,5 +105,13 @@ class _JointMotorFunctionState extends State<JointMotorFunction> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    for (var subscription in _streamSubscriptions) {
+      subscription.cancel();
+    }
+    super.dispose();
+  }
 }
 

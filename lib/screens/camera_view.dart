@@ -4,14 +4,14 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imageLib;
-import 'package:cyberlife/tflite/hand_detection.dart';
+import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utilities/image_utils.dart';
 import 'package:cyberlife/utilities/isolate_utils.dart';
 
 class CameraView extends StatefulWidget {
   /// Default Constructor
 
-  final Function(List<double> points) pointsCallback;
+  final Function(List<double> points, int width, int height, bool handedness) pointsCallback;
 
   final Function(Image image) imageCallback;
 
@@ -23,7 +23,7 @@ class CameraView extends StatefulWidget {
   State<CameraView> createState() => _CameraViewState();
 }
 
-class _CameraViewState extends State<CameraView> {
+class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
 
   late CameraController cameraController;
   late List<CameraDescription> cameras;
@@ -52,6 +52,7 @@ class _CameraViewState extends State<CameraView> {
   }
 
   void initStateAsync() async {
+    WidgetsBinding.instance.addObserver(this);
     isolateUtils = IsolateUtils();
     await isolateUtils.start();
     handDetector = HandDetection();
@@ -86,16 +87,19 @@ class _CameraViewState extends State<CameraView> {
     IsolateData isolateData = IsolateData(
         cameraImage, handDetector.interpreter!.address);
 
-    List<double> pointList = await inference(isolateData);
-    widget.pointsCallback(pointList);
+    Map<String, dynamic> results = await inference(isolateData);
+    List<double> pointList = (results.isNotEmpty) ? results["landmarks"] : [];
+    bool handedness = (results.isNotEmpty) ? results["handedness"] > 0.5 : true;
+    widget.pointsCallback(pointList, cameraImage.width, cameraImage.height, handedness);
 
     //debug for printing image
 
-    imageLib.Image debugImage = ImageUtils.convertCameraImage(cameraImage);
-    debugImage = imageLib.copyResizeCropSquare(debugImage, 224);
+    /*imageLib.Image debugImage = ImageUtils.convertCameraImage(cameraImage);
+    //debugImage = imageLib.copyResizeCropSquare(debugImage, 224);
     widget.imageCallback(Image.memory(
-        imageLib.encodeJpg(debugImage) as Uint8List));
-    await Future.delayed(Duration(milliseconds: 100));
+        imageLib.encodeJpg(debugImage) as Uint8List));*/
+
+    await Future.delayed(Duration(milliseconds: 66));
 
     setState(() {
       processing = false;
@@ -103,7 +107,7 @@ class _CameraViewState extends State<CameraView> {
   }
 
   /// Runs inference in another isolate
-  Future<List<double>> inference(IsolateData isolateData) async {
+  Future<Map<String, dynamic>> inference(IsolateData isolateData) async {
     ReceivePort responsePort = ReceivePort();
     isolateUtils.sendPort
         .send(isolateData..responsePort = responsePort.sendPort);
@@ -113,6 +117,7 @@ class _CameraViewState extends State<CameraView> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     cameraController.dispose();
     super.dispose();
   }

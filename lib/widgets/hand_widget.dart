@@ -7,8 +7,12 @@ class HandWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Container(
+      child: Stack(
         children: points,
+      ),
+      height: 480,
+      width: 480,
     );
   }
 }

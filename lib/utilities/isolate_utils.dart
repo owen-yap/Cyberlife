@@ -2,7 +2,7 @@ import 'dart:isolate';
 
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as imageLib;
-import 'package:cyberlife/tflite/hand_detection.dart';
+import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utilities/image_utils.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -38,7 +38,7 @@ class IsolateUtils {
         imageLib.Image image =
             ImageUtils.convertCameraImage(isolateData.cameraImage);
 
-        List<double> results = await handDetector.predict(image);
+        Map<String, dynamic> results = await handDetector.predict(image);
         isolateData.responsePort!.send(results);
       }
     }

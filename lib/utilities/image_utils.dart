@@ -57,13 +57,13 @@ class ImageUtils {
         (r & 0xff);
   }
 
-  static imageLib.Image squareCropFromTop(imageLib.Image image, int newSide) {
+  static imageLib.Image squareCropMiddle(imageLib.Image image, int newSide) {
     return imageLib.copyResizeCropSquare(image, newSide);
   }
 
   static imageLib.Image convertCameraImage(CameraImage cameraImage) {
     imageLib.Image image = convertYUV420ToImage(cameraImage);
     int newSide = min(cameraImage.width, cameraImage.height);
-    return squareCropFromTop(image, newSide);
+    return squareCropMiddle(image, newSide);
   }
 }

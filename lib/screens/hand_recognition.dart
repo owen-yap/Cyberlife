@@ -1,8 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cyberlife/screens/camera_view.dart';
 
-import 'package:cyberlife/widgets/appbar.dart';
 import 'package:cyberlife/models/hand_landmarks.dart';
+import 'package:cyberlife/tflite/hand_detection_model.dart';
+import 'package:cyberlife/utilities/hand_gesture_recognition.dart';
+import 'package:cyberlife/widgets/appbar.dart';
 
 class HandRecognition extends StatefulWidget {
   final String title = "Hand Recognition";
@@ -15,8 +19,9 @@ class HandRecognition extends StatefulWidget {
 
 class _HandRecognitionState extends State<HandRecognition> {
 
-  List<double> points = [];
+  HandLandmarks? handLandmarks;
   Image? image;
+  Gestures? gesture;
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +29,20 @@ class _HandRecognitionState extends State<HandRecognition> {
 
     return Scaffold(
       appBar: appBar,
-      body: Stack(
-        children: <Widget>[
-          CameraView(pointsCallback: pointsCallback, imageCallback: imageCallback),
-          drawDebugPicture(), // debug for printing image
-          drawLandmark(),
-        ]
-      )
+      body: Center(
+        child: Column(
+          children: [
+            Stack(
+              children: <Widget>[
+                CameraView(pointsCallback: pointsCallback, imageCallback: imageCallback),
+                //drawDebugPicture(), // debug for printing image
+                drawLandmark(),
+              ],
+            ),
+          displayGesture(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -40,14 +52,20 @@ class _HandRecognitionState extends State<HandRecognition> {
     });
   }
 
-  void pointsCallback(List<double> points) {
+  void pointsCallback(List<double> points, int width, int height, bool handedness) {
     setState(() {
-      this.points = points;
+      handLandmarks = HandLandmarks(handedness: handedness, landmarkList: points,
+          scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
     });
   }
 
   Widget drawLandmark() {
-    return HandLandmarks(landmarkList: points).build();
+    if (handLandmarks == null || !handLandmarks!.hasPoints()) {
+      gesture = null;
+      return Container();
+    }
+    gesture = handLandmarks!.getRecognition();
+    return handLandmarks!.build();
   }
 
   Widget drawDebugPicture() {
@@ -55,7 +73,15 @@ class _HandRecognitionState extends State<HandRecognition> {
       return Container();
     }
     return Container(
+      margin: const EdgeInsets.only(top: 120.0),
       child: image!,
     );
+  }
+
+  Widget displayGesture() {
+    if (gesture == null) {
+      return const Text("No hand detected!");
+    }
+    return Text(gesture.toString());
   }
 }

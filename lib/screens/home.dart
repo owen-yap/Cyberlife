@@ -1,11 +1,11 @@
 // ignore_for_file: file_names
 
-import 'package:cyberlife/widgets/appbar.dart';
-import 'package:flutter/material.dart';
-import 'package:cyberlife/screens/pain_map.dart';
 import 'package:cyberlife/screens/joint_motor_function.dart';
 import 'package:cyberlife/screens/open_close.dart';
-
+import 'package:cyberlife/screens/pain_map.dart';
+import 'package:cyberlife/screens/pinky_supination.dart';
+import 'package:cyberlife/widgets/appbar.dart';
+import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -42,6 +42,14 @@ class Home extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => const OpenClose())
+                );
+              },
+            ),
+            ElevatedButton(
+              child: const Text("Pinky Supination Test"),
+              onPressed: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => const PinkySupination())
                 );
               },
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cyberlife/widgets/hand_point.dart';
 import 'package:cyberlife/widgets/hand_widget.dart';
+import 'package:cyberlife/utilities/finger_angle_detection.dart';
 import 'package:cyberlife/utilities/hand_gesture_recognition.dart';
 
 class HandLandmarks {
@@ -37,5 +38,13 @@ class HandLandmarks {
 
   Gestures getRecognition() {
     return HandGestureRecognition.getRecognition(pointList, handedness);
+  }
+
+  bool areFingersClosed() {
+    return FingerAngleDetection.areFingersClosed(pointList);
+  }
+
+  double getPinkySupination() {
+    return FingerAngleDetection.getPinkySupination(pointList);
   }
 }

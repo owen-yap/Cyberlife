@@ -4,7 +4,7 @@ import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/screens/pain_map.dart';
 import 'package:cyberlife/screens/joint_motor_function.dart';
-import 'package:cyberlife/screens/camera.dart';
+import 'package:cyberlife/screens/hand_recognition.dart';
 
 
 class Home extends StatelessWidget {
@@ -25,7 +25,7 @@ class Home extends StatelessWidget {
               child: const Text("Pain Map"),
               onPressed: () {
                 Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const PainMap())
+                  context, MaterialPageRoute(builder: (context) => PainMap(key: UniqueKey()))
                 );
               },
             ),
@@ -38,10 +38,10 @@ class Home extends StatelessWidget {
               },
             ),
             ElevatedButton(
-              child: const Text("Camera"),
+              child: const Text("Hand Recognition"),
               onPressed: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const Camera())
+                    context, MaterialPageRoute(builder: (context) => const HandRecognition())
                 );
               },
             ),

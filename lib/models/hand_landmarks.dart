@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:cyberlife/widgets/hand_point.dart';
 import 'package:cyberlife/widgets/hand_widget.dart';
-import 'package:cyberlife/utilities/finger_angle_detection.dart';
-import 'package:cyberlife/utilities/hand_gesture_recognition.dart';
+import 'package:cyberlife/utils/finger_angle_detection.dart';
+import 'package:cyberlife/utils/hand_gesture_recognition.dart';
 
 class HandLandmarks {
-
   static const int NUM_OF_VECTORS = 3;
   double scaleFactor;
   bool handedness;
   List<double> landmarkList;
   List<HandPoint> pointList = [];
-  HandLandmarks({required this.handedness, required this.landmarkList, required this.scaleFactor}) {
+  HandLandmarks(
+      {required this.handedness,
+      required this.landmarkList,
+      required this.scaleFactor}) {
     pointList = getPoints();
   }
 
@@ -29,7 +31,8 @@ class HandLandmarks {
     }
     List<HandPoint> tempList = [];
     for (int i = 0; i < 21; i++) {
-      HandPoint point = HandPoint(x: landmarkList[i * NUM_OF_VECTORS] * scaleFactor,
+      HandPoint point = HandPoint(
+          x: landmarkList[i * NUM_OF_VECTORS] * scaleFactor,
           y: landmarkList[i * NUM_OF_VECTORS + 1] * scaleFactor);
       tempList.add(point);
     }

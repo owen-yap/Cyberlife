@@ -4,8 +4,7 @@ import 'package:image/image.dart' as imageLib;
 import 'package:flutter/material.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
-import 'package:cyberlife/utilities/image_utils.dart';
-
+import 'package:cyberlife/utils/image_utils.dart';
 
 // this function loads the model
 class HandDetection {
@@ -40,14 +39,14 @@ class HandDetection {
   }
 
   void loadModel(Interpreter? interpreter) async {
-
     if (interpreter != null) {
       loadTensors();
       return;
     }
 
     try {
-      this.interpreter = await Interpreter.fromAsset(MODEL_FILE_NAME,
+      this.interpreter = await Interpreter.fromAsset(
+        MODEL_FILE_NAME,
         options: InterpreterOptions()..threads = 4,
       );
 
@@ -69,20 +68,20 @@ class HandDetection {
   }
 
   TensorImage processImage(imageLib.Image image) {
-    imageLib.Image resizedImage = imageLib.copyResizeCropSquare(image, IMAGE_SIZE);
+    imageLib.Image resizedImage =
+        imageLib.copyResizeCropSquare(image, size: IMAGE_SIZE);
     TensorImage inputImage = TensorImage(TfLiteType.float32);
     inputImage.loadImage(resizedImage);
     return imageProcessor.process(inputImage);
   }
 
   Image getPicture(CameraImage cameraImage) {
-    TensorImage image = processImage(
-        ImageUtils.convertCameraImage(cameraImage));
+    TensorImage image =
+        processImage(ImageUtils.convertCameraImage(cameraImage));
     return Image.memory(imageLib.encodeJpg(image.image) as Uint8List);
   }
 
   Future<Map<String, dynamic>> predict(imageLib.Image image) async {
-
     if (interpreter == null) {
       print("Interpreter not initialized");
       return {};
@@ -91,10 +90,14 @@ class HandDetection {
     TensorImage inputImage = processImage(image);
 
     // Load TensorBuffers for output tensors
-    TensorBuffer outputScreenLandmarks = TensorBuffer.createFixedSize(_outputShapes[0], _outputTypes[0]);
-    TensorBuffer outputScore = TensorBuffer.createFixedSize(_outputShapes[1], _outputTypes[1]);
-    TensorBuffer outputHandedness = TensorBuffer.createFixedSize(_outputShapes[2], _outputTypes[2]);
-    TensorBuffer output3DLandmarks = TensorBuffer.createFixedSize(_outputShapes[3], _outputTypes[3]);
+    TensorBuffer outputScreenLandmarks =
+        TensorBuffer.createFixedSize(_outputShapes[0], _outputTypes[0]);
+    TensorBuffer outputScore =
+        TensorBuffer.createFixedSize(_outputShapes[1], _outputTypes[1]);
+    TensorBuffer outputHandedness =
+        TensorBuffer.createFixedSize(_outputShapes[2], _outputTypes[2]);
+    TensorBuffer output3DLandmarks =
+        TensorBuffer.createFixedSize(_outputShapes[3], _outputTypes[3]);
 
     List<Object> inputs = [inputImage.buffer];
 
@@ -112,7 +115,7 @@ class HandDetection {
     if (enableThreshold && outputScore.getDoubleValue(0) < THRESHOLD) {
       return {};
     }
-    
+
     return {
       "landmarks": outputScreenLandmarks.getDoubleList(),
       "handedness": outputHandedness.getDoubleValue(0)

@@ -6,11 +6,10 @@ import 'package:cyberlife/screens/camera_view.dart';
 
 import 'package:cyberlife/models/hand_landmarks.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
-import 'package:cyberlife/utilities/hand_gesture_recognition.dart';
+import 'package:cyberlife/utils/hand_gesture_recognition.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 
 class OpenClose extends StatefulWidget {
-
   final String title = "Open Close Test";
 
   final bool showDebugImage = false;
@@ -22,14 +21,9 @@ class OpenClose extends StatefulWidget {
   _OpenCloseState createState() => _OpenCloseState();
 }
 
-enum HandState {
-  UNSET,
-  OPEN,
-  CLOSE
-}
+enum HandState { UNSET, OPEN, CLOSE }
 
 class _OpenCloseState extends State<OpenClose> {
-
   HandLandmarks? handLandmarks;
   Image? image;
   Gestures? gesture;
@@ -51,8 +45,10 @@ class _OpenCloseState extends State<OpenClose> {
           children: [
             Stack(
               children: <Widget>[
-                CameraView(pointsCallback: pointsCallback, imageCallback: imageCallback),
-                drawDebugPicture(),// debug for printing image
+                CameraView(
+                    pointsCallback: pointsCallback,
+                    imageCallback: imageCallback),
+                drawDebugPicture(), // debug for printing image
                 drawLandmark(),
               ],
             ),
@@ -69,52 +65,51 @@ class _OpenCloseState extends State<OpenClose> {
   }
 
   Widget generateStats() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      Expanded(
+        child: Column(
+          children: [
+            const Text("Time Left",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                )),
+            Text("$timeLeft",
+                style: const TextStyle(
+                  fontSize: 28,
+                )),
+          ],
+        ),
+      ),
+      Expanded(
           child: Column(
-            children: [
-              const Text("Time Left", style: TextStyle(
+        children: [
+          const Text("Number of Open Closes",
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
               )),
-              Text("$timeLeft", style: const TextStyle(
+          Text("$numOpenClose",
+              style: const TextStyle(
                 fontSize: 28,
               )),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              const Text("Number of Open Closes", style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              )),
-              Text("$numOpenClose", style: const TextStyle(
-                fontSize: 28,
-              )),
-            ],
-          )
-        ),
-      ]
-    );
+        ],
+      )),
+    ]);
   }
 
   void startTest() {
-    timer = Timer.periodic(const Duration(seconds: 1),
-            (timer) {
-              if (timeLeft == 0) {
-                setState(() {
-                  endTest();
-                });
-              } else {
-                setState(() {
-                  timeLeft--;
-                });
-              }
-            });
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timeLeft == 0) {
+        setState(() {
+          endTest();
+        });
+      } else {
+        setState(() {
+          timeLeft--;
+        });
+      }
+    });
     hasStarted = true;
     setState(() {
       numOpenClose = 0;
@@ -133,9 +128,12 @@ class _OpenCloseState extends State<OpenClose> {
     });
   }
 
-  void pointsCallback(List<double> points, int width, int height, bool handedness) {
+  void pointsCallback(
+      List<double> points, int width, int height, bool handedness) {
     setState(() {
-      handLandmarks = HandLandmarks(handedness: handedness, landmarkList: points,
+      handLandmarks = HandLandmarks(
+          handedness: handedness,
+          landmarkList: points,
           scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
       if (handLandmarks!.hasPoints()) {
         updateGesture(handLandmarks!.getRecognition());

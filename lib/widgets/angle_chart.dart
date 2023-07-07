@@ -1,4 +1,4 @@
-import 'package:cyberlife/utilities/angle_series.dart';
+import 'package:cyberlife/utils/angle_series.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
@@ -11,13 +11,14 @@ class AngleChart extends StatelessWidget {
   Widget build(BuildContext context) {
     List<charts.Series<AngleSeries, num>> series = [
       charts.Series(
-          id: "angles",
-          data: data,
-          domainFn: (AngleSeries series, _) => series.id,
-          measureFn: (AngleSeries series, _) => series.angle,
+        id: "angles",
+        data: data,
+        domainFn: (AngleSeries series, _) => series.id,
+        measureFn: (AngleSeries series, _) => series.angle,
       )
     ];
-    return charts.LineChart(series,
+    return charts.LineChart(
+      series,
       primaryMeasureAxis: charts.NumericAxisSpec(
         tickProviderSpec: charts.StaticNumericTickProviderSpec(
           <charts.TickSpec<num>>[
@@ -29,6 +30,7 @@ class AngleChart extends StatelessWidget {
             charts.TickSpec<num>(100),
           ],
         ),
-      ),);
+      ),
+    );
   }
 }

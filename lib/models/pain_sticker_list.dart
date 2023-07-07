@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:cyberlife/widgets/pain_sticker.dart';
 import 'package:screenshot/screenshot.dart';
@@ -67,8 +65,7 @@ class PainStickerList {
         controller: screenshotController,
         child: Stack(
           children: widgetList,
-        )
-    );
+        ));
 
     widgetList = <Widget>[];
     widgetList.insert(0, stack);
@@ -86,8 +83,7 @@ class PainStickerList {
         degree: item,
         draggable: true,
         x: defaultX + offset * 3,
-        y: defaultY + offset * 3)
-    );
+        y: defaultY + offset * 3));
   }
 
   void addPS(PainSticker ps) {

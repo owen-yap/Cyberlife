@@ -6,11 +6,10 @@ import 'package:cyberlife/screens/camera_view.dart';
 
 import 'package:cyberlife/models/hand_landmarks.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
-import 'package:cyberlife/utilities/hand_gesture_recognition.dart';
+import 'package:cyberlife/utils/hand_gesture_recognition.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 
 class PinkySupination extends StatefulWidget {
-
   final String title = "Pinky Supination Test";
 
   final bool showDebugImage = false;
@@ -23,7 +22,6 @@ class PinkySupination extends StatefulWidget {
 }
 
 class _PinkySupinationState extends State<PinkySupination> {
-
   HandLandmarks? handLandmarks;
   Image? image;
   Gestures? gesture;
@@ -46,8 +44,10 @@ class _PinkySupinationState extends State<PinkySupination> {
           children: [
             Stack(
               children: <Widget>[
-                CameraView(pointsCallback: pointsCallback, imageCallback: imageCallback),
-                drawDebugPicture(),// debug for printing image
+                CameraView(
+                    pointsCallback: pointsCallback,
+                    imageCallback: imageCallback),
+                drawDebugPicture(), // debug for printing image
                 drawLandmark(),
               ],
             ),
@@ -65,71 +65,71 @@ class _PinkySupinationState extends State<PinkySupination> {
   }
 
   Widget generateStats() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          child: Column(
-            children: [
-              const Text("Time Left", style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              )),
-              Text("$timeLeft", style: const TextStyle(
-                fontSize: 28,
-              )),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              const Text("Current Supination Degree", style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              )),
-              Text(supinationDegree.toStringAsFixed(1), style: const TextStyle(
-                fontSize: 28,
-              )),
-            ],
-          )
-        ),
-        Expanded(
-            child: Column(
-              children: [
-                const Text("Max Supination Degree", style: TextStyle(
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+      Expanded(
+        child: Column(
+          children: [
+            const Text("Time Left",
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 )),
-                Text(maxSupinationDegree.toStringAsFixed(1), style: const TextStyle(
+            Text("$timeLeft",
+                style: const TextStyle(
                   fontSize: 28,
                 )),
-              ],
-            )
+          ],
         ),
-      ]
-    );
+      ),
+      Expanded(
+          child: Column(
+        children: [
+          const Text("Current Supination Degree",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              )),
+          Text(supinationDegree.toStringAsFixed(1),
+              style: const TextStyle(
+                fontSize: 28,
+              )),
+        ],
+      )),
+      Expanded(
+          child: Column(
+        children: [
+          const Text("Max Supination Degree",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              )),
+          Text(maxSupinationDegree.toStringAsFixed(1),
+              style: const TextStyle(
+                fontSize: 28,
+              )),
+        ],
+      )),
+    ]);
   }
 
   Widget gestureRemark() {
     return Center(
-        child: Text(remark),
+      child: Text(remark),
     );
   }
 
   void startTest() {
-    timer = Timer.periodic(const Duration(seconds: 1),
-            (timer) {
-              if (timeLeft == 0) {
-                setState(() {
-                  endTest();
-                });
-              } else {
-                setState(() {
-                  timeLeft--;
-                });
-              }
-            });
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (timeLeft == 0) {
+        setState(() {
+          endTest();
+        });
+      } else {
+        setState(() {
+          timeLeft--;
+        });
+      }
+    });
     hasStarted = true;
     setState(() {
       supinationDegree = 0;
@@ -149,9 +149,12 @@ class _PinkySupinationState extends State<PinkySupination> {
     });
   }
 
-  void pointsCallback(List<double> points, int width, int height, bool handedness) {
+  void pointsCallback(
+      List<double> points, int width, int height, bool handedness) {
     setState(() {
-      handLandmarks = HandLandmarks(handedness: handedness, landmarkList: points,
+      handLandmarks = HandLandmarks(
+          handedness: handedness,
+          landmarkList: points,
           scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
       if (handLandmarks!.hasPoints()) {
         gesture = handLandmarks!.getRecognition();

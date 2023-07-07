@@ -3,7 +3,7 @@ import 'dart:isolate';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:cyberlife/tflite/hand_detection_model.dart';
-import 'package:cyberlife/utilities/image_utils.dart';
+import 'package:cyberlife/utils/image_utils.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
 /// Manages separate Isolate instance for inference
@@ -33,7 +33,8 @@ class IsolateUtils {
     await for (final IsolateData isolateData in port) {
       if (isolateData != null) {
         HandDetection handDetector = HandDetection.fromInterpreter(
-            interpreter: Interpreter.fromAddress(isolateData.handInterpreterAddress));
+            interpreter:
+                Interpreter.fromAddress(isolateData.handInterpreterAddress));
 
         imageLib.Image image =
             ImageUtils.convertCameraImage(isolateData.cameraImage);

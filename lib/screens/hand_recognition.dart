@@ -5,7 +5,7 @@ import 'package:cyberlife/screens/camera_view.dart';
 
 import 'package:cyberlife/models/hand_landmarks.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
-import 'package:cyberlife/utilities/hand_gesture_recognition.dart';
+import 'package:cyberlife/utils/hand_gesture_recognition.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 
 class HandRecognition extends StatefulWidget {
@@ -18,7 +18,6 @@ class HandRecognition extends StatefulWidget {
 }
 
 class _HandRecognitionState extends State<HandRecognition> {
-
   HandLandmarks? handLandmarks;
   Image? image;
   Gestures? gesture;
@@ -34,12 +33,14 @@ class _HandRecognitionState extends State<HandRecognition> {
           children: [
             Stack(
               children: <Widget>[
-                CameraView(pointsCallback: pointsCallback, imageCallback: imageCallback),
+                CameraView(
+                    pointsCallback: pointsCallback,
+                    imageCallback: imageCallback),
                 //drawDebugPicture(), // debug for printing image
                 drawLandmark(),
               ],
             ),
-          displayGesture(),
+            displayGesture(),
           ],
         ),
       ),
@@ -52,9 +53,12 @@ class _HandRecognitionState extends State<HandRecognition> {
     });
   }
 
-  void pointsCallback(List<double> points, int width, int height, bool handedness) {
+  void pointsCallback(
+      List<double> points, int width, int height, bool handedness) {
     setState(() {
-      handLandmarks = HandLandmarks(handedness: handedness, landmarkList: points,
+      handLandmarks = HandLandmarks(
+          handedness: handedness,
+          landmarkList: points,
           scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
     });
   }

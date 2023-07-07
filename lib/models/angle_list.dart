@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cyberlife/utilities/angle_series.dart';
+import 'package:cyberlife/utils/angle_series.dart';
 import 'package:cyberlife/widgets/angle_chart.dart';
 
 class AngleList {
@@ -13,11 +13,10 @@ class AngleList {
   Widget generateChart() {
     AngleChart chart = AngleChart(generateSeries(angleList));
     return Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: chart,
-        ),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: chart,
+      ),
     );
   }
-
 }

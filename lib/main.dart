@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:cyberlife/utilities/firebase_options.dart';
+import 'package:cyberlife/utils/firebase_options.dart';
 import 'package:cyberlife/screens/home.dart';
 
 Future<void> main() async {
@@ -25,8 +25,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

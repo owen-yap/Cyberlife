@@ -1,21 +1,23 @@
 import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as imageLib;
 import 'package:cyberlife/tflite/hand_detection_model.dart';
-import 'package:cyberlife/utilities/image_utils.dart';
-import 'package:cyberlife/utilities/isolate_utils.dart';
+import 'package:cyberlife/utils/image_utils.dart';
+import 'package:cyberlife/utils/isolate_utils.dart';
 
 class CameraView extends StatefulWidget {
   /// Default Constructor
 
-  final Function(List<double> points, int width, int height, bool handedness) pointsCallback;
+  final Function(List<double> points, int width, int height, bool handedness)
+      pointsCallback;
 
   final Function(Image image) imageCallback;
 
-  const CameraView({required this.pointsCallback, required this.imageCallback, Key? key}) : super(key: key);
+  const CameraView(
+      {required this.pointsCallback, required this.imageCallback, Key? key})
+      : super(key: key);
 
   final String title = "Camera";
 
@@ -24,7 +26,6 @@ class CameraView extends StatefulWidget {
 }
 
 class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
-
   late CameraController cameraController;
   late List<CameraDescription> cameras;
   late String err;
@@ -61,7 +62,8 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
 
   void initCamera() async {
     cameras = await availableCameras();
-    cameraController = CameraController(cameras[0], ResolutionPreset.medium, enableAudio: false);
+    cameraController = CameraController(cameras[0], ResolutionPreset.medium,
+        enableAudio: false);
     cameraController.initialize().then((_) async {
       await cameraController.startImageStream(onLatestImageAvailable);
       if (!mounted) {
@@ -84,13 +86,14 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       processing = true;
     });
 
-    IsolateData isolateData = IsolateData(
-        cameraImage, handDetector.interpreter!.address);
+    IsolateData isolateData =
+        IsolateData(cameraImage, handDetector.interpreter!.address);
 
     Map<String, dynamic> results = await inference(isolateData);
     List<double> pointList = (results.isNotEmpty) ? results["landmarks"] : [];
     bool handedness = (results.isNotEmpty) ? results["handedness"] > 0.5 : true;
-    widget.pointsCallback(pointList, cameraImage.width, cameraImage.height, handedness);
+    widget.pointsCallback(
+        pointList, cameraImage.width, cameraImage.height, handedness);
 
     //debug for printing image
 

@@ -4,19 +4,35 @@ class AppTheme {
   static const lightGreen = Color(0xFF00DCA6);
   static const navy = Color(0xFF07203C);
 
+  static const displayLarge = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.bold,
+    color: navy,
+  );
+
   static const displayMedium = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: navy,
+  );
+
+  static const displaySmall = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
     color: navy,
   );
 
-  static const bodyMedium = TextStyle(fontSize: 12, color: Colors.grey);
+  static var bodyMedium = TextStyle(fontSize: 16, color: Colors.grey.shade800);
 
   static final ThemeData lightTheme = ThemeData(
     primarySwatch: Colors.blue,
     fontFamily: 'Roboto',
     textTheme:
-        const TextTheme(displayMedium: displayMedium, bodyMedium: bodyMedium),
+        TextTheme(
+          displaySmall: displaySmall,
+          displayMedium: displayMedium,
+          displayLarge: displayLarge,
+          bodyMedium: bodyMedium),
     buttonTheme: ButtonThemeData(
       buttonColor: lightGreen,
       textTheme: ButtonTextTheme.primary,
@@ -31,7 +47,7 @@ class AppTheme {
         ),
         backgroundColor: MaterialStateProperty.all(lightGreen),
         foregroundColor: MaterialStateProperty.all(navy),
-        textStyle: MaterialStateProperty.all(displayMedium),
+        textStyle: MaterialStateProperty.all(displaySmall),
         shape: MaterialStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(64.0),

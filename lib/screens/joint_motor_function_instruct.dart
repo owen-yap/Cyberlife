@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'dart:async';
 import 'dart:math';
 import 'package:cyberlife/screens/joint_motor_function.dart';
@@ -7,7 +5,6 @@ import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
 class JointMotorFunctionInstructions extends StatelessWidget {
-
   final String title = "Joint Motor Function";
 
   const JointMotorFunctionInstructions({super.key});
@@ -15,50 +12,63 @@ class JointMotorFunctionInstructions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     CommonAppBar appBar = CommonAppBar(title: title);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: appBar,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Instructions - Range of Motion',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              const Expanded(
+                child: SizedBox(),
+              ),
+              const Icon(
+                Icons.info_outline,
+                size: 120,
+              ),
+              const SizedBox(height: 48),
+              Text(
+                'Range of Motion',
+                style: theme.textTheme.displayMedium,
               ),
               const SizedBox(height: 16),
-              const Text(
-                '1. Make sure your device has the necessary sensors.',
-                style: TextStyle(fontSize: 18),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  'Instructions:',
+                  '1. Make sure your device has the necessary sensors.',
+                  '2. Hold your device flat and parallel to the ground.',
+                  '3. Tap the "Start" button to begin recording accelerometer data.',
+                  '4. Tilt your device to observe changes in the X, Y, and Z values.',
+                  '5. The calculated angle based on the accelerometer data will be displayed.',
+                ]
+                    .map(
+                      (instruction) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          instruction,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ),
+                    )
+                    .toList(),
               ),
-              const Text(
-                '2. Hold your device flat and parallel to the ground.',
-                style: TextStyle(fontSize: 18),
-              ),
-              const Text(
-                '3. Tap the "Start" button to begin recording accelerometer data.',
-                style: TextStyle(fontSize: 18),
-              ),
-              const Text(
-                '4. Tilt your device to observe changes in the X, Y, and Z values.',
-                style: TextStyle(fontSize: 18),
-              ),
-              const Text(
-                '5. The calculated angle based on the accelerometer data will be displayed.',
-                style: TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 48),
               ElevatedButton(
                 child: const Text('Start'),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const JointMotorFunction())
-                );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const JointMotorFunction()));
                 },
+              ),
+              const Expanded(
+                child: SizedBox(),
               ),
             ],
           ),

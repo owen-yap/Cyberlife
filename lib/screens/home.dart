@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:cyberlife/screens/joint_motor_function.dart';
+import 'package:cyberlife/screens/joint_motor_function_instruct.dart';
 import 'package:cyberlife/screens/open_close.dart';
 import 'package:cyberlife/screens/pain_map.dart';
 import 'package:cyberlife/screens/pinky_supination.dart';
@@ -33,7 +34,7 @@ class Home extends StatelessWidget {
               child: const Text("Joint Motor Function"),
               onPressed: () {
                 Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => const JointMotorFunction())
+                  context, MaterialPageRoute(builder: (context) => const JointMotorFunctionInstructions())
                 );
               },
             ),

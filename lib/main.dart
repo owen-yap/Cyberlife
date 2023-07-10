@@ -4,18 +4,16 @@ import 'package:cyberlife/views/auth/login_view.dart';
 import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
 import 'package:flutter/material.dart';
-import 'package:cyberlife/views/home.dart';
+import 'theme.dart';
+import 'package:cyberlife/views/home_view.dart';
 import 'dart:developer' as devtools show log;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MaterialApp(
-    title: 'Cyberlife Prototype',
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      useMaterial3: true,
-    ),
+    title: 'Cyberlife',
+    theme: AppTheme.lightTheme,
     home: const HomePage(),
     routes: {
       loginRoute: (context) => const LoginView(),

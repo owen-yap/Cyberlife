@@ -1,6 +1,4 @@
-import 'dart:async';
-import 'dart:math';
-import 'package:cyberlife/screens/joint_motor_function.dart';
+import 'package:cyberlife/views/joint_motor_function.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 

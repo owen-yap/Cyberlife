@@ -2,36 +2,35 @@ import 'dart:math';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:cyberlife/screens/camera_view.dart';
+import 'package:cyberlife/views/camera_view.dart';
 
 import 'package:cyberlife/models/hand_landmarks.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utils/hand_gesture_recognition.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 
-class OpenClose extends StatefulWidget {
-  final String title = "Open Close Test";
+class PinkySupination extends StatefulWidget {
+  final String title = "Pinky Supination Test";
 
   final bool showDebugImage = false;
   final bool showLandmarkPoints = false;
 
-  const OpenClose({Key? key}) : super(key: key);
+  const PinkySupination({Key? key}) : super(key: key);
 
   @override
-  _OpenCloseState createState() => _OpenCloseState();
+  _PinkySupinationState createState() => _PinkySupinationState();
 }
 
-enum HandState { UNSET, OPEN, CLOSE }
-
-class _OpenCloseState extends State<OpenClose> {
+class _PinkySupinationState extends State<PinkySupination> {
   HandLandmarks? handLandmarks;
   Image? image;
   Gestures? gesture;
 
   int timeLeft = 0;
-  int numOpenClose = 0;
+  double supinationDegree = 0;
+  double maxSupinationDegree = 0;
   bool hasStarted = false;
-  HandState previousHandState = HandState.UNSET;
+  String remark = "";
   Timer? timer;
 
   @override
@@ -58,6 +57,7 @@ class _OpenCloseState extends State<OpenClose> {
               onPressed: startTest,
             ),
             generateStats(),
+            gestureRemark(),
           ],
         ),
       ),
@@ -84,18 +84,38 @@ class _OpenCloseState extends State<OpenClose> {
       Expanded(
           child: Column(
         children: [
-          const Text("Number of Open Closes",
+          const Text("Current Supination Degree",
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
               )),
-          Text("$numOpenClose",
+          Text(supinationDegree.toStringAsFixed(1),
+              style: const TextStyle(
+                fontSize: 28,
+              )),
+        ],
+      )),
+      Expanded(
+          child: Column(
+        children: [
+          const Text("Max Supination Degree",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              )),
+          Text(maxSupinationDegree.toStringAsFixed(1),
               style: const TextStyle(
                 fontSize: 28,
               )),
         ],
       )),
     ]);
+  }
+
+  Widget gestureRemark() {
+    return Center(
+      child: Text(remark),
+    );
   }
 
   void startTest() {
@@ -112,7 +132,8 @@ class _OpenCloseState extends State<OpenClose> {
     });
     hasStarted = true;
     setState(() {
-      numOpenClose = 0;
+      supinationDegree = 0;
+      maxSupinationDegree = 0;
       timeLeft = 20;
     });
   }
@@ -136,26 +157,28 @@ class _OpenCloseState extends State<OpenClose> {
           landmarkList: points,
           scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
       if (handLandmarks!.hasPoints()) {
-        updateGesture(handLandmarks!.getRecognition());
+        gesture = handLandmarks!.getRecognition();
+        calculateSupination();
       } else {
-        updateGesture(null);
+        gesture = null;
+        remark = "No hand detected for supination test!";
       }
     });
   }
 
-  void updateGesture(Gestures? newGesture) {
-    gesture = newGesture;
-    if (!hasStarted) {
+  void calculateSupination() {
+    if (gesture != Gestures.FOUR && gesture != Gestures.FIVE) {
+      remark = "Improper gesture: need FOUR or FIVE!";
       return;
     }
-
-    if (gesture == Gestures.FIST) {
-      if (previousHandState == HandState.OPEN) {
-        numOpenClose++;
-      }
-      previousHandState = HandState.CLOSE;
-    } else if (gesture == Gestures.FIVE || gesture == Gestures.FOUR) {
-      previousHandState = HandState.OPEN;
+    if (!handLandmarks!.areFingersClosed()) {
+      remark = "Fingers not closed enough!";
+      return;
+    }
+    remark = "OK for supination calculation!";
+    if (hasStarted) {
+      supinationDegree = handLandmarks!.getPinkySupination();
+      maxSupinationDegree = max(supinationDegree, maxSupinationDegree);
     }
   }
 

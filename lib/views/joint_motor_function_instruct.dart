@@ -1,4 +1,10 @@
+<<<<<<<< HEAD:lib/screens/joint_motor_function/joint_motor_function_instruct.dart
+import 'dart:async';
+import 'dart:math';
+import 'package:cyberlife/screens/joint_motor_function/joint_motor_function_main.dart';
+========
 import 'package:cyberlife/views/joint_motor_function.dart';
+>>>>>>>> cda3ef3f02322684c4639b26b6ee999deda31285:lib/views/joint_motor_function_instruct.dart
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 

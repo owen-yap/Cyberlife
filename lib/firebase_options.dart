@@ -50,20 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCwbb-SjK6xWgyt7sdtgKoKEdvjK2q3Fe0',
-    appId: '1:775113187555:android:0e1cc74e594491ad8465d6',
-    messagingSenderId: '775113187555',
-    projectId: 'cyberlife-fb70e',
-    storageBucket: 'cyberlife-fb70e.appspot.com',
+    apiKey: 'AIzaSyChtPN9pdfx1rzFPG7dcarhsD8qeZD_Rug',
+    appId: '1:47515064570:android:000e0f17d8d9be34b9d143',
+    messagingSenderId: '47515064570',
+    projectId: 'cyberlife-96b3e',
+    storageBucket: 'cyberlife-96b3e.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC_oJGNcypRJnWFq3LBV45NFbJgConZqjo',
-    appId: '1:775113187555:ios:5ea0cc30498615d48465d6',
-    messagingSenderId: '775113187555',
-    projectId: 'cyberlife-fb70e',
-    storageBucket: 'cyberlife-fb70e.appspot.com',
-    iosClientId: '775113187555-n9p6nd69cd05i4u2esa5m6pfd734750h.apps.googleusercontent.com',
+    apiKey: 'AIzaSyAzd8aqVWj2L34ZjkCzDyU9Z3hf8qeWBPk',
+    appId: '1:47515064570:ios:11cfc2f879736c26b9d143',
+    messagingSenderId: '47515064570',
+    projectId: 'cyberlife-96b3e',
+    storageBucket: 'cyberlife-96b3e.appspot.com',
+    iosClientId: '47515064570-plb2074a6o7e4furs452qarkm5tnun6m.apps.googleusercontent.com',
     iosBundleId: 'com.example.untitled',
   );
 }

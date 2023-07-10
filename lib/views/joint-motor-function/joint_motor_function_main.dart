@@ -1,11 +1,7 @@
 // ignore_for_file: file_names
 
-import 'dart:async';
-import 'dart:math';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:sensors_plus/sensors_plus.dart';
-import 'package:cyberlife/models/angle_list.dart';
 
 class JointMotorFunctionMain extends StatefulWidget {
   const JointMotorFunctionMain({Key? key}) : super(key: key);

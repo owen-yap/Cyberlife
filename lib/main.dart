@@ -5,18 +5,15 @@ import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
-import 'package:cyberlife/views/home.dart';
+import 'package:cyberlife/views/home_view.dart';
 import 'dart:developer' as devtools show log;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MaterialApp(
-    title: 'Cyberlife Prototype',
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      useMaterial3: true,
-    ),
+    title: 'Cyberlife',
+    theme: AppTheme.lightTheme,
     home: const HomePage(),
     routes: {
       loginRoute: (context) => const LoginView(),
@@ -32,33 +29,29 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Cyberlife',
-      theme: AppTheme.lightTheme,
-      home: Scaffold(
-          appBar: AppBar(),
-          body: FutureBuilder(
-            future: AuthService.firebase().initialize(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  final user = AuthService.firebase().currentUser;
-                  if (user != null) {
-                    devtools.log(user.toString());
-                    if (user.isEmailVerified) {
-                      return const HomeView();
-                    } else {
-                      return const VerifyEmailView();
-                    }
+    return Scaffold(
+        appBar: AppBar(),
+        body: FutureBuilder(
+          future: AuthService.firebase().initialize(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                final user = AuthService.firebase().currentUser;
+                if (user != null) {
+                  devtools.log(user.toString());
+                  if (user.isEmailVerified) {
+                    return const HomeView();
                   } else {
-                    return const LoginView();
+                    return const VerifyEmailView();
                   }
+                } else {
+                  return const LoginView();
+                }
 
-                default:
-                  return const CircularProgressIndicator();
-              }
-            },
-          )),
-    );
+              default:
+                return const CircularProgressIndicator();
+            }
+          },
+        ));
   }
 }

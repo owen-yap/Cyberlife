@@ -3,7 +3,7 @@
 import 'package:cyberlife/constants/routes.dart';
 import 'package:cyberlife/enums/menu_action.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
-import 'package:cyberlife/views/joint_motor_function_instruct.dart';
+import 'package:cyberlife/views/joint-motor-function/joint_motor_function_instruct.dart';
 import 'package:cyberlife/views/open_close.dart';
 import 'package:cyberlife/views/pain_map.dart';
 import 'package:cyberlife/views/pinky_supination.dart';

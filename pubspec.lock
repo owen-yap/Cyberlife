@@ -789,6 +789,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+<<<<<<< Updated upstream
   test_core:
     dependency: transitive
     description:
@@ -797,6 +798,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+=======
+>>>>>>> Stashed changes
   tflite_flutter:
     dependency: "direct main"
     description:

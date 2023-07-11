@@ -1,4 +1,5 @@
 import 'package:cyberlife/components/joint-motor-function/motor_function_test_button.dart';
+import 'package:cyberlife/views/joint-motor-function/function_instructions.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
   Widget build(BuildContext context) {
     CommonAppBar appBar = CommonAppBar(title: widget.title);
     final theme = Theme.of(context);
+    const defaultVideoPath = "assets/videos/sample.mp4";
 
     return Scaffold(
       appBar: appBar,
@@ -43,8 +45,11 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              const JointMotorFunctionMain()));
+                          builder: (context) => const FunctionInstructions(
+                                title: "Shoulder",
+                                videoPath: defaultVideoPath,
+                                testPage: JointMotorFunctionMain(),
+                              )));
                 },
                 isCompleted: true,
               ),
@@ -55,8 +60,11 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              const JointMotorFunctionMain()));
+                          builder: (context) => const FunctionInstructions(
+                                title: "Elbow",
+                                videoPath: defaultVideoPath,
+                                testPage: JointMotorFunctionMain(),
+                              )));
                 },
                 isCompleted: false,
               ),
@@ -67,8 +75,11 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              const JointMotorFunctionMain()));
+                          builder: (context) => const FunctionInstructions(
+                                title: "Knee",
+                                videoPath: defaultVideoPath,
+                                testPage: JointMotorFunctionMain(),
+                              )));
                 },
                 isCompleted: false,
               ),

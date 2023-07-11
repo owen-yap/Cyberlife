@@ -1,5 +1,4 @@
-// ignore_for_file: file_names
-
+import 'package:cyberlife/components/joint-motor-function/motor_function_test_button.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +26,7 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 24),
+              const SizedBox(height: 36),
               Text(
                 'Range of Motion',
                 style: theme.textTheme.displayMedium,
@@ -35,11 +34,11 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
               const SizedBox(height: 16),
               Text(
                 'Perform all tests to completion',
-                style: theme.textTheme.displayMedium,
+                style: theme.textTheme.displaySmall,
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                child: const Text('Continue'),
+              const SizedBox(height: 48),
+              MotorFunctionTestButton(
+                label: 'Shoulder',
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -47,6 +46,31 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                           builder: (context) =>
                               const JointMotorFunctionMain()));
                 },
+                isCompleted: true,
+              ),
+              const SizedBox(height: 24),
+              MotorFunctionTestButton(
+                label: 'Elbow',
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const JointMotorFunctionMain()));
+                },
+                isCompleted: false,
+              ),
+              const SizedBox(height: 24),
+              MotorFunctionTestButton(
+                label: 'Knee',
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const JointMotorFunctionMain()));
+                },
+                isCompleted: false,
               ),
               const Expanded(
                 child: SizedBox(),

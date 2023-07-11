@@ -1,4 +1,5 @@
-import 'package:cyberlife/views/joint_motor_function.dart';
+
+import 'package:cyberlife/views/joint-motor-function/joint_motor_function_main.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -57,12 +58,12 @@ class JointMotorFunctionInstructions extends StatelessWidget {
               ),
               const SizedBox(height: 48),
               ElevatedButton(
-                child: const Text('Start'),
+                child: const Text('Continue'),
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const JointMotorFunction()));
+                          builder: (context) => const JointMotorFunctionMain()));
                 },
               ),
               const Expanded(

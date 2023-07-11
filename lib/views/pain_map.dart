@@ -1,8 +1,6 @@
 // ignore_for_file: file_names
 import 'dart:typed_data';
 
-import 'dart:typed_data';
-
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:cyberlife/widgets/colored_tabbar.dart';
 import 'package:cyberlife/widgets/pain_submap.dart';
@@ -27,7 +25,12 @@ class _PainMapState extends State<PainMap> {
   //Create an instance of ScreenshotController
   ScreenshotController screenshotController = ScreenshotController();
 
-  List<PainStickerList> psLists = [PainStickerList(), PainStickerList(), PainStickerList(), PainStickerList()];
+  List<PainStickerList> psLists = [
+    PainStickerList(),
+    PainStickerList(),
+    PainStickerList(),
+    PainStickerList()
+  ];
   var currTabIndex = 0;
 
   static const tabBar = TabBar(
@@ -108,55 +111,54 @@ class _PainMapState extends State<PainMap> {
     return Scaffold(
         appBar: appBar,
         body: Center(
-            child: Stack(
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        child: NotificationListener<PainStickerNotification>(
-                          onNotification: (notification) {
-                            handleNotification(notification);
-                            return true;
-                          },
-                          child: DefaultTabController(
-                            length: 4,
-                            initialIndex: 0,
-                            child: Builder(builder: (BuildContext context) {
-                              final TabController controller = DefaultTabController.of(context)!;
-                              controller.addListener(() {
-                                if (!controller.indexIsChanging) {
-                                  currTabIndex = controller.index;
-                                }
-                              });
-                              return Scaffold(
-                                appBar: const ColoredTabBar(tb: tabBar),
-                                body: TabBarView(children: [
-                                  PainSubmap(
-                                    label: 'Front',
-                                    psList: psLists[0],
-                                    screenshotController: screenshotController),
-                                  PainSubmap(
-                                    label: 'Back',
-                                    psList: psLists[1],
-                                    screenshotController: screenshotController),
-                                  PainSubmap(
-                                    label: 'Left',
-                                    psList: psLists[2],
-                                    screenshotController: screenshotController),
-                                  PainSubmap(
-                                    label: 'Right',
-                                    psList: psLists[3],
-                                    screenshotController: screenshotController)
-                                  ]),
-                              );
-                            })
-                          ),
-                        ),
-                      )
-                    ]),
-                    stickerWidgetsPositioned,
-                    screenshotButton
-                ])));
+            child: Stack(children: <Widget>[
+          Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                  child: NotificationListener<PainStickerNotification>(
+                    onNotification: (notification) {
+                      handleNotification(notification);
+                      return true;
+                    },
+                    child: DefaultTabController(
+                        length: 4,
+                        initialIndex: 0,
+                        child: Builder(builder: (BuildContext context) {
+                          final TabController controller =
+                              DefaultTabController.of(context)!;
+                          controller.addListener(() {
+                            if (!controller.indexIsChanging) {
+                              currTabIndex = controller.index;
+                            }
+                          });
+                          return Scaffold(
+                            appBar: const ColoredTabBar(tb: tabBar),
+                            body: TabBarView(children: [
+                              PainSubmap(
+                                  label: 'Front',
+                                  psList: psLists[0],
+                                  screenshotController: screenshotController),
+                              PainSubmap(
+                                  label: 'Back',
+                                  psList: psLists[1],
+                                  screenshotController: screenshotController),
+                              PainSubmap(
+                                  label: 'Left',
+                                  psList: psLists[2],
+                                  screenshotController: screenshotController),
+                              PainSubmap(
+                                  label: 'Right',
+                                  psList: psLists[3],
+                                  screenshotController: screenshotController)
+                            ]),
+                          );
+                        })),
+                  ),
+                )
+              ]),
+          stickerWidgetsPositioned,
+          screenshotButton
+        ])));
   }
 }

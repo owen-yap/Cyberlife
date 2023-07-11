@@ -26,6 +26,7 @@ class _FunctionInstructionsState extends State<FunctionInstructions> {
   void _initializeVideoPlayer() async {
     await _controller.initialize();
     setState(() {}); // Update the UI to reflect the video initialization
+    _controller.play();
   }
 
   @override

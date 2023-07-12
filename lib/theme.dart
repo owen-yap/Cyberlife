@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const lightGreen = Color(0xFF00DCA6);
-  static const navy = Color(0xFF07203C);
+  static const Color lightGreen = Color(0xFF00DCA6);
+  static const Color navy = Color(0xFF07203C);
+  static const Color red = Color.fromARGB(255, 238, 147, 146);
 
   static const displayLarge = TextStyle(
     fontSize: 28,

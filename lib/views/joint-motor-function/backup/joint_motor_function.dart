@@ -17,7 +17,6 @@ class JointMotorFunction extends StatefulWidget {
 }
 
 class _JointMotorFunctionState extends State<JointMotorFunction> {
-
   AngleList aList = AngleList();
   bool recording = false;
 
@@ -25,15 +24,14 @@ class _JointMotorFunctionState extends State<JointMotorFunction> {
     if (recording == false) {
       recording = true;
       aList = AngleList();
-    }
-    else {
+    } else {
       recording = false;
     }
   }
 
-  double calculateAngle(double ? x, double ? y) {
+  double calculateAngle(double? x, double? y) {
     if (x == null || y == null) return 0;
-    double res = -atan2(x, y) * (180/pi);
+    double res = -atan2(x, y) * (180 / pi);
     if (recording) aList.add(res);
     return res;
   }
@@ -45,8 +43,7 @@ class _JointMotorFunctionState extends State<JointMotorFunction> {
   Widget build(BuildContext context) {
     CommonAppBar appBar = CommonAppBar(title: widget.title);
 
-    final accelerometer =
-    _accelerometerValues?.toList();
+    final accelerometer = _accelerometerValues?.toList();
 
     return Scaffold(
       appBar: appBar,
@@ -54,29 +51,29 @@ class _JointMotorFunctionState extends State<JointMotorFunction> {
         child: Column(
           children: [
             DecoratedBox(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2.0, color: Colors.black38),
-
-                ),
-
+              decoration: BoxDecoration(
+                border: Border.all(width: 2.0, color: Colors.black38),
+              ),
               child: Padding(
                   padding: EdgeInsets.all(16.0),
-                  child:
-                    SizedBox(
-                        width: 300.0,
-                        height: 100.0,
-                        child: Column(
-                          children: [
-                            Card(child: Text('X Value: ${accelerometer?[0].toStringAsFixed(1)}')),
-                            Card(child: Text('Y Value: ${accelerometer?[1].toStringAsFixed(1)}')),
-                            Card(child: Text('Z Value: ${accelerometer?[2].toStringAsFixed(1)}')),
-                            Card(child: Text('Angle: ${calculateAngle(accelerometer?[0], accelerometer?[2]).toStringAsFixed(3)}')),
-                          ]
-
-                        ),
-                    )
-
-              ),
+                  child: SizedBox(
+                    width: 300.0,
+                    height: 100.0,
+                    child: Column(children: [
+                      Card(
+                          child: Text(
+                              'X Value: ${accelerometer?[0].toStringAsFixed(1)}')),
+                      Card(
+                          child: Text(
+                              'Y Value: ${accelerometer?[1].toStringAsFixed(1)}')),
+                      Card(
+                          child: Text(
+                              'Z Value: ${accelerometer?[2].toStringAsFixed(1)}')),
+                      Card(
+                          child: Text(
+                              'Angle: ${calculateAngle(accelerometer?[0], accelerometer?[2]).toStringAsFixed(3)}')),
+                    ]),
+                  )),
             ),
             ElevatedButton(
               child: Text(recording ? "Stop" : "Start"),
@@ -84,7 +81,6 @@ class _JointMotorFunctionState extends State<JointMotorFunction> {
                 toggleRecording();
               },
             ),
-
             aList.generateChart(),
           ],
         ),
@@ -97,7 +93,7 @@ class _JointMotorFunctionState extends State<JointMotorFunction> {
     super.initState();
     _streamSubscriptions.add(
       accelerometerEvents.listen(
-            (AccelerometerEvent event) {
+        (AccelerometerEvent event) {
           setState(() {
             _accelerometerValues = <double>[event.x, event.y, event.z];
           });
@@ -114,4 +110,3 @@ class _JointMotorFunctionState extends State<JointMotorFunction> {
     super.dispose();
   }
 }
-

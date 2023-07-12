@@ -1,5 +1,6 @@
 import 'package:cyberlife/components/joint-motor-function/motor_function_test_button.dart';
 import 'package:cyberlife/views/joint-motor-function/function_instructions.dart';
+import 'package:cyberlife/views/joint-motor-function/joint_motor_test.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +49,9 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                           builder: (context) => const FunctionInstructions(
                                 title: "Shoulder",
                                 videoPath: defaultVideoPath,
-                                testPage: JointMotorFunctionMain(),
+                                testPage: JointMotorFunctionTest(
+                                  title: "Shoulder",
+                                ),
                               )));
                 },
                 isCompleted: true,
@@ -63,7 +66,9 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                           builder: (context) => const FunctionInstructions(
                                 title: "Elbow",
                                 videoPath: defaultVideoPath,
-                                testPage: JointMotorFunctionMain(),
+                                testPage: JointMotorFunctionTest(
+                                  title: "Elbow",
+                                ),
                               )));
                 },
                 isCompleted: false,
@@ -78,7 +83,9 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                           builder: (context) => const FunctionInstructions(
                                 title: "Knee",
                                 videoPath: defaultVideoPath,
-                                testPage: JointMotorFunctionMain(),
+                                testPage: JointMotorFunctionTest(
+                                  title: "Knee",
+                                ),
                               )));
                 },
                 isCompleted: false,

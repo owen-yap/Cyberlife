@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cyberlife/layout/scrollable_scaffold.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/foundation.dart';

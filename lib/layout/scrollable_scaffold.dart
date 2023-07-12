@@ -1,30 +1,33 @@
 import 'package:flutter/material.dart';
 
-class CustomScrollableScaffold extends StatefulWidget {
+/* Attempt to make the layout of the app scrollable when phone is tilted.
+ * Currently still buggy.
+ */
+class ScrollableScaffold extends StatelessWidget {
   final Widget appBar;
-  final List<Widget> slivers;
+  final Widget body;
 
-  CustomScrollableScaffold({required this.appBar, required this.slivers});
+  ScrollableScaffold({required this.appBar, required this.body});
 
-  @override
-  _CustomScrollableScaffoldState createState() =>
-      _CustomScrollableScaffoldState();
-}
-
-class _CustomScrollableScaffoldState extends State<CustomScrollableScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
             pinned: true,
             elevation: 0,
             toolbarHeight: kToolbarHeight,
-            flexibleSpace: widget.appBar,
+            flexibleSpace: appBar,
           ),
-          ...widget.slivers,
         ],
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: body,
+            ),
+          ],
+        ),
       ),
     );
   }

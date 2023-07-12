@@ -3,12 +3,138 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
-class DatabaseAlreadyOpenException implements Exception {}
-
-class UnableToGetDocumentsDirectoryException implements Exception {}
-
 class ResultsService {
   Database? _db;
+
+  Future<DatabaseUser> createUser({required String email}) async {
+    final db = _getDatabaseOrThrow();
+    final res = await db.query(
+      userTable,
+      limit: 1,
+      where: 'email = ?',
+      whereArgs: [email.toLowerCase()],
+    );
+
+    if (res.isNotEmpty) {
+      throw UserAlreadyExistsException();
+    }
+
+    final userId = await db.insert(userTable, {
+      emailColumn: email.toLowerCase(),
+    });
+
+    return DatabaseUser(
+      id: userId,
+      email: email,
+    );
+  }
+
+  Future<DatabaseResult> createResult({required DatabaseUser owner}) async {
+    final db = _getDatabaseOrThrow();
+
+    final dbUser = await getUser(email: owner.email);
+    if (dbUser != owner) {
+      throw CouldNotFindUserException();
+    }
+
+    const text = '';
+    final resultId = await db.insert(resultTable, {
+      userIdColumn: owner.id,
+      textColumn: text,
+    });
+
+    final result = DatabaseResult(
+      id: resultId,
+      userId: owner.id,
+      text: text,
+    );
+
+    return result;
+  }
+
+  Future<DatabaseUser> getUser({required String email}) async {
+    final db = _getDatabaseOrThrow();
+
+    final res = await db.query(
+      userTable,
+      limit: 1,
+      where: 'email = ?',
+      whereArgs: [email.toLowerCase()],
+    );
+
+    if (res.isEmpty) {
+      throw CouldNotFindUserException();
+    } else {
+      return DatabaseUser.fromRow(res.first);
+    }
+  }
+
+  Future<DatabaseResult> getResult({required int id}) async {
+    final db = _getDatabaseOrThrow();
+    final results = await db.query(
+      resultTable,
+      limit: 1,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (results.isEmpty) {
+      throw CouldNotFindResultException();
+    } else {
+      return DatabaseResult.fromRow(results.first);
+    }
+  }
+
+  Future<Iterable<DatabaseResult>> getAllResults() async {
+    final db = _getDatabaseOrThrow();
+    final results = await db.query(resultTable);
+
+    return results.map((resultRow) => DatabaseResult.fromRow(resultRow));
+  }
+
+  Future<DatabaseResult> updateResult(
+      {required DatabaseResult result, required String text}) async {
+    final db = _getDatabaseOrThrow();
+
+    await getResult(id: result.id);
+
+    final updatesCount = await db.update(resultTable, {
+      textColumn: text,
+    });
+
+    if (updatesCount == 0) {
+      throw CouldNotUpdateResultException();
+    } else {
+      return await getResult(id: result.id);
+    }
+  }
+
+  Future<int> deleteAllResults() async {
+    final db = _getDatabaseOrThrow();
+    return await db.delete(resultTable);
+  }
+
+  Future<void> deleteUser({required String email}) async {
+    final db = _getDatabaseOrThrow();
+    final deletedCount = await db.delete(
+      userTable,
+      where: 'email = ?',
+      whereArgs: [email.toLowerCase()],
+    );
+
+    if (deletedCount != 1) {
+      throw CouldNotDeleteUserException();
+    }
+  }
+
+  Database _getDatabaseOrThrow() {
+    final db = _db;
+    if (db == null) {
+      throw DatabaseIsNotOpenException();
+    } else {
+      return db;
+    }
+  }
 
   Future<void> open() async {
     if (_db != null) {
@@ -24,6 +150,16 @@ class ResultsService {
       await db.execute(createResultTable);
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectoryException();
+    }
+  }
+
+  Future<void> close() async {
+    final db = _db;
+    if (db == null) {
+      throw DatabaseIsNotOpen();
+    } else {
+      await db.close();
+      _db = null;
     }
   }
 }

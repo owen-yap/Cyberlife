@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cyberlife/services/crud/crud_exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -6,7 +9,32 @@ import 'package:path/path.dart';
 class ResultsService {
   Database? _db;
 
+  List<DatabaseResult> _results = [];
+
+  final _resultsStreamController =
+      StreamController<List<DatabaseResult>>.broadcast();
+
+  Stream<List<DatabaseResult>> get allResults =>
+      _resultsStreamController.stream;
+
+  Future<void> _cacheResults() async {
+    final allResults = await getAllResults();
+    _results = allResults.toList();
+    _resultsStreamController.add(_results);
+  }
+
+  Future<DatabaseUser> getOrCreateUser({required String email}) async {
+    try {
+      final user = await getUser(email: email);
+      return user;
+    } on CouldNotFindUserException {
+      final newUser = await createUser(email: email);
+      return newUser;
+    }
+  }
+
   Future<DatabaseUser> createUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final res = await db.query(
       userTable,
@@ -30,6 +58,7 @@ class ResultsService {
   }
 
   Future<DatabaseResult> createResult({required DatabaseUser owner}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     final dbUser = await getUser(email: owner.email);
@@ -49,10 +78,14 @@ class ResultsService {
       text: text,
     );
 
+    _results.add(result);
+    _resultsStreamController.add(_results);
+
     return result;
   }
 
   Future<DatabaseUser> getUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
     final res = await db.query(
@@ -70,6 +103,7 @@ class ResultsService {
   }
 
   Future<DatabaseResult> getResult({required int id}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(
       resultTable,
@@ -81,11 +115,16 @@ class ResultsService {
     if (results.isEmpty) {
       throw CouldNotFindResultException();
     } else {
-      return DatabaseResult.fromRow(results.first);
+      final result = DatabaseResult.fromRow(results.first);
+      _results.removeWhere((result) => result.id == id);
+      _results.add(result);
+      _resultsStreamController.add(_results);
+      return result;
     }
   }
 
   Future<Iterable<DatabaseResult>> getAllResults() async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final results = await db.query(resultTable);
 
@@ -94,8 +133,10 @@ class ResultsService {
 
   Future<DatabaseResult> updateResult(
       {required DatabaseResult result, required String text}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
+    // Make sure that the result exists
     await getResult(id: result.id);
 
     final updatesCount = await db.update(resultTable, {
@@ -105,16 +146,42 @@ class ResultsService {
     if (updatesCount == 0) {
       throw CouldNotUpdateResultException();
     } else {
-      return await getResult(id: result.id);
+      final updatedResult = await getResult(id: result.id);
+      _results.add(updatedResult);
+      _resultsStreamController.add(_results);
+      return updatedResult;
     }
   }
 
   Future<int> deleteAllResults() async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
-    return await db.delete(resultTable);
+    final numDeletions = await db.delete(resultTable);
+
+    _results = [];
+    _resultsStreamController.add(_results);
+
+    return numDeletions;
+  }
+
+  Future<void> deleteResult({required int id}) async {
+    await _ensureDbIsOpen();
+    final db = _getDatabaseOrThrow();
+    final deleteCount = await db.delete(
+      resultTable,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (deleteCount != 1) {
+      throw CouldNotDeleteResultException();
+    } else {
+      _results.removeWhere((result) => result.id == id);
+      _resultsStreamController.add(_results);
+    }
   }
 
   Future<void> deleteUser({required String email}) async {
+    await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
     final deletedCount = await db.delete(
       userTable,
@@ -136,6 +203,12 @@ class ResultsService {
     }
   }
 
+  Future<void> _ensureDbIsOpen() async {
+    try {
+      await open();
+    } on DatabaseAlreadyOpenException {}
+  }
+
   Future<void> open() async {
     if (_db != null) {
       throw DatabaseAlreadyOpenException();
@@ -148,6 +221,7 @@ class ResultsService {
 
       await db.execute(createUserTable);
       await db.execute(createResultTable);
+      await _cacheResults();
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentsDirectoryException();
     }
@@ -156,7 +230,7 @@ class ResultsService {
   Future<void> close() async {
     final db = _db;
     if (db == null) {
-      throw DatabaseIsNotOpen();
+      throw DatabaseIsNotOpenException();
     } else {
       await db.close();
       _db = null;

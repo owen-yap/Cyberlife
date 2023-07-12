@@ -3,6 +3,7 @@
 import 'package:cyberlife/constants/routes.dart';
 import 'package:cyberlife/enums/menu_action.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
+import 'package:cyberlife/services/crud/results_service.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_instruct.dart';
 import 'package:cyberlife/views/open_close.dart';
 import 'package:cyberlife/views/pain_map.dart';
@@ -18,6 +19,21 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  late final ResultsService _resultsService;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    _resultsService = ResultsService();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _resultsService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,48 +63,58 @@ class _HomeViewState extends State<HomeView> {
           },
         )
       ]),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              child: const Text("Pain Map"),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PainMap(key: UniqueKey())));
-              },
-            ),
-            ElevatedButton(
-              child: const Text("Joint Motor Function"),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const JointMotorFunctionInstructions()));
-              },
-            ),
-            ElevatedButton(
-              child: const Text("Open-Close Test"),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const OpenClose()));
-              },
-            ),
-            ElevatedButton(
-              child: const Text("Pinky Supination Test"),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PinkySupination()));
-              },
-            ),
-          ],
-        ),
-      ),
+      body: FutureBuilder(
+          future: _resultsService.getOrCreateUser(email: userEmail),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      child: const Text("Pain Map"),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PainMap(key: UniqueKey())));
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text("Joint Motor Function"),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const JointMotorFunctionInstructions()));
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text("Open-Close Test"),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const OpenClose()));
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text("Pinky Supination Test"),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const PinkySupination()));
+                      },
+                    ),
+                  ],
+                );
+              default:
+                return const CircularProgressIndicator();
+            }
+          }),
     );
   }
 }

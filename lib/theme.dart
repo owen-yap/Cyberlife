@@ -43,7 +43,7 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          const EdgeInsets.symmetric(vertical: 30.0, horizontal: 48.0),
         ),
         backgroundColor: MaterialStateProperty.all(lightGreen),
         foregroundColor: MaterialStateProperty.all(navy),

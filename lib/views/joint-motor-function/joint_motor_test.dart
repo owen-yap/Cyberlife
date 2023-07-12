@@ -1,8 +1,8 @@
-// ignore_for_file: file_names
-
 import 'dart:async';
 import 'dart:math';
 import 'package:cyberlife/components/stopwatch_circle.dart';
+import 'package:cyberlife/constants/routes.dart';
+import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +59,7 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
   Widget build(BuildContext context) {
     CommonAppBar appBar = CommonAppBar(title: "${widget.title} Test");
     final accelerometer = _accelerometerValues?.toList();
+    final testState = JointMotorFunctionUserState.of(context);
 
     return Scaffold(
       appBar: appBar,
@@ -129,6 +130,13 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                             ),
                         onPressed: () {
                           // TODO: Bring up confirmation dialog, then pop till joint motor function main page
+                          testState?.shoulderComplete = true;
+                          testState?.shoulderAngles = aList;
+                          Navigator.popUntil(
+                              context,
+                              (route) =>
+                                  route.settings.name ==
+                                  jointMotorFunctionMainRoute);
                         },
                         child: Text(
                           "Submit",

@@ -3,6 +3,7 @@ import 'package:cyberlife/services/auth/auth_service.dart';
 import 'package:cyberlife/views/auth/login_view.dart';
 import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
+import 'package:cyberlife/views/joint-motor-function/joint_motor_function_main.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'package:cyberlife/views/home_view.dart';
@@ -20,6 +21,7 @@ Future<void> main() async {
       registerRoute: (context) => const RegisterView(),
       homeRoute: (context) => const HomeView(),
       verifyEmailRoute: (context) => const VerifyEmailView(),
+      jointMotorFunctionMainRoute: (context) => const JointMotorFunctionMain()
     },
   ));
 }

@@ -5,7 +5,7 @@ import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
-import 'package:cyberlife/views/home_view.dart';
+import 'package:cyberlife/views/home/home_view.dart';
 import 'dart:developer' as devtools show log;
 
 Future<void> main() async {

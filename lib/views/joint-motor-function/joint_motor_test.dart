@@ -11,8 +11,10 @@ import 'package:cyberlife/models/angle_list.dart';
 
 class JointMotorFunctionTest extends StatefulWidget {
   final String title;
+  final JointMotorFunctionUserState testState;
 
-  const JointMotorFunctionTest({Key? key, required this.title})
+  const JointMotorFunctionTest(
+      {Key? key, required this.title, required this.testState})
       : super(key: key);
 
   @override
@@ -59,7 +61,6 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
   Widget build(BuildContext context) {
     CommonAppBar appBar = CommonAppBar(title: "${widget.title} Test");
     final accelerometer = _accelerometerValues?.toList();
-    final testState = JointMotorFunctionUserState.of(context);
 
     return Scaffold(
       appBar: appBar,
@@ -130,13 +131,10 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                             ),
                         onPressed: () {
                           // TODO: Bring up confirmation dialog, then pop till joint motor function main page
-                          testState?.shoulderComplete = true;
-                          testState?.shoulderAngles = aList;
-                          Navigator.popUntil(
-                              context,
-                              (route) =>
-                                  route.settings.name ==
-                                  jointMotorFunctionMainRoute);
+                          // testState?.shoulderComplete = true;
+                          // testState?.shoulderAngles = aList;
+                          widget.testState.markShoulderTest(true, aList);
+                          Navigator.pop(context, widget.testState);
                         },
                         child: Text(
                           "Submit",

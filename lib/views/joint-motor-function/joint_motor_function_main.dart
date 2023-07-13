@@ -23,94 +23,108 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
   bool kneeComplete = false;
   AngleList kneeAngles = AngleList();
 
+  JointMotorFunctionUserState testState = JointMotorFunctionUserState();
+
+  void _awaitTestResult(
+      BuildContext context, String title, String videoPath) async {
+    // start the SecondScreen and wait for it to finish with a result
+    JointMotorFunctionUserState updatedTestState = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => FunctionInstructions(
+                  title: title,
+                  videoPath: videoPath,
+                  testPage: JointMotorFunctionTest(
+                    title: title,
+                    testState: testState,
+                  ),
+                )));
+
+    print('shoulder: ${updatedTestState.isShoulderComplete}');
+    print('shoulder: ${updatedTestState.shoulderAngles}');
+    setState(() {
+      testState = updatedTestState;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     CommonAppBar appBar = CommonAppBar(title: widget.title);
     final theme = Theme.of(context);
     const defaultVideoPath = "assets/videos/sample.mp4";
 
-    return JointMotorFunctionUserState(
-      shoulderComplete: shoulderComplete,
-      shoulderAngles: shoulderAngles,
-      elbowComplete: elbowComplete,
-      elbowAngles: elbowAngles,
-      kneeComplete: kneeComplete,
-      kneeAngles: kneeAngles,
-      child: Scaffold(
-        appBar: appBar,
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const SizedBox(height: 36),
-                Text(
-                  'Range of Motion',
-                  style: theme.textTheme.displayMedium,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Perform all tests to completion',
-                  style: theme.textTheme.displaySmall,
-                ),
-                const SizedBox(height: 48),
-                MotorFunctionTestButton(
-                  label: 'Shoulder',
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FunctionInstructions(
-                                  title: "Shoulder",
-                                  videoPath: defaultVideoPath,
-                                  testPage: JointMotorFunctionTest(
-                                    title: "Shoulder",
-                                  ),
-                                )));
-                  },
-                  isCompleted: shoulderComplete,
-                ),
-                const SizedBox(height: 24),
-                MotorFunctionTestButton(
-                  label: 'Elbow',
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FunctionInstructions(
+    return Scaffold(
+      appBar: appBar,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 36),
+              Text(
+                'Range of Motion',
+                style: theme.textTheme.displayMedium,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Perform all tests to completion',
+                style: theme.textTheme.displaySmall,
+              ),
+              const SizedBox(height: 48),
+              MotorFunctionTestButton(
+                label: 'Shoulder',
+                onPressed: () {
+                  _awaitTestResult(context, "Shoulder", defaultVideoPath);
+                },
+                isCompleted: testState.isShoulderComplete,
+              ),
+              const SizedBox(height: 24),
+              MotorFunctionTestButton(
+                label: 'Elbow',
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FunctionInstructions(
+                                title: "Elbow",
+                                videoPath: defaultVideoPath,
+                                testPage: JointMotorFunctionTest(
                                   title: "Elbow",
-                                  videoPath: defaultVideoPath,
-                                  testPage: JointMotorFunctionTest(
-                                    title: "Elbow",
-                                  ),
-                                )));
-                  },
-                  isCompleted: elbowComplete,
-                ),
-                const SizedBox(height: 24),
-                MotorFunctionTestButton(
-                  label: 'Knee',
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const FunctionInstructions(
+                                  testState: testState,
+                                ),
+                              )));
+                },
+                isCompleted: elbowComplete,
+              ),
+              const SizedBox(height: 24),
+              MotorFunctionTestButton(
+                label: 'Knee',
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FunctionInstructions(
+                                title: "Knee",
+                                videoPath: defaultVideoPath,
+                                testPage: JointMotorFunctionTest(
                                   title: "Knee",
-                                  videoPath: defaultVideoPath,
-                                  testPage: JointMotorFunctionTest(
-                                    title: "Knee",
-                                  ),
-                                )));
-                  },
-                  isCompleted: kneeComplete,
-                ),
-                const Expanded(
-                  child: SizedBox(),
-                ),
-              ],
-            ),
+                                  testState: testState,
+                                ),
+                              )));
+                },
+                isCompleted: kneeComplete,
+              ),
+              const Expanded(
+                child: SizedBox(),
+              ),
+            ],
           ),
         ),
       ),

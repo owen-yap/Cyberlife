@@ -1,39 +1,39 @@
 import 'package:cyberlife/models/angle_list.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
-class JointMotorFunctionUserState extends Model {
-  bool shoulderComplete;
-  AngleList shoulderAngles;
-  bool elbowComplete;
-  AngleList elbowAngles;
-  bool kneeComplete;
-  AngleList kneeAngles;
+class JointMotorFunctionUserState {
+  List<Function> listeners = <Function>[];
 
-  JointMotorFunctionUserState({
-    required this.shoulderComplete,
-    required this.shoulderAngles,
-    required this.elbowComplete,
-    required this.elbowAngles,
-    required this.kneeComplete,
-    required this.kneeAngles,
-    required Widget child
-    })
-      : super(child: child);
+  bool shoulderComplete = false;
+  AngleList shoulderAngles = AngleList();
+  bool elbowComplete = false;
+  AngleList elbowAngles = AngleList();
+  bool kneeComplete = false;
+  AngleList kneeAngles = AngleList();
 
-  static JointMotorFunctionUserState? of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<JointMotorFunctionUserState>();
+  bool get isShoulderComplete => shoulderComplete;
+  AngleList get shoulderAngleList => shoulderAngles;
+  bool get isElbowComplete => elbowComplete;
+  AngleList get elbowAngleList => elbowAngles;
+  bool get isKneeComplete => kneeComplete;
+  AngleList get kneeAngleList => kneeAngles;
+
+  // TODO: Repalce with one function + enums
+  void markShoulderTest(bool completed, AngleList? angles) {
+    assert(!(completed && angles == null));
+    shoulderComplete = completed;
+    shoulderAngles = angles ?? AngleList();
   }
 
-  @override
-  bool updateShouldNotify(JointMotorFunctionUserState oldWidget) {
-    return 
-    (oldWidget.shoulderComplete != shoulderComplete) || 
-    (oldWidget.shoulderAngles != shoulderAngles) || 
-    (oldWidget.elbowComplete != elbowComplete) || 
-    (oldWidget.elbowAngles != elbowAngles) || 
-    (oldWidget.kneeComplete != kneeComplete) || 
-    (oldWidget.kneeAngles != kneeAngles);
+  void markElbowTest(bool completed, AngleList? angles) {
+    assert(!(completed && angles == null));
+    elbowComplete = completed;
+    elbowAngles = angles ?? AngleList();
+  }
+
+  void markKneeTest(bool completed, AngleList? angles) {
+    assert(!(completed && angles == null));
+    kneeComplete = completed;
+    kneeAngles = angles ?? AngleList();
   }
 }

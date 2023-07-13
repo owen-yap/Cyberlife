@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static const lightGreen = Color(0xFF00DCA6);
-  static const navy = Color(0xFF07203C);
+  static const Color lightGreen = Color(0xFF00DCA6);
+  static const Color navy = Color(0xFF07203C);
+  static const Color red = Color.fromARGB(255, 238, 147, 146);
 
   static const displayLarge = TextStyle(
     fontSize: 28,
@@ -43,7 +44,7 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+          const EdgeInsets.symmetric(vertical: 30.0, horizontal: 48.0),
         ),
         backgroundColor: MaterialStateProperty.all(lightGreen),
         foregroundColor: MaterialStateProperty.all(navy),

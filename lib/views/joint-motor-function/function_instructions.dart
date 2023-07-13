@@ -52,15 +52,6 @@ class _FunctionInstructionsState extends State<FunctionInstructions> {
     _startTimer();
   }
 
-  void _awaitTestResult(BuildContext context, String title) async {
-    // start the SecondScreen and wait for it to finish with a result
-    JointMotorFunctionUserState updatedTestState = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => widget.testPage));
-
-    // after the SecondScreen result comes back update the Text widget with it
-    if (context.mounted) Navigator.pop(context, updatedTestState);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -167,7 +158,8 @@ class _FunctionInstructionsState extends State<FunctionInstructions> {
               ElevatedButton(
                 child: const Text('Start'),
                 onPressed: () {
-                  _awaitTestResult(context, widget.title);
+                  Navigator.push(
+        context, MaterialPageRoute(builder: (context) => widget.testPage));
                 },
               ),
               const SizedBox(height: 48),

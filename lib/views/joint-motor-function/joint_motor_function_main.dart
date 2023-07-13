@@ -23,30 +23,6 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
   bool kneeComplete = false;
   AngleList kneeAngles = AngleList();
 
-  JointMotorFunctionUserState testState = JointMotorFunctionUserState();
-
-  void _awaitTestResult(
-      BuildContext context, String title, String videoPath) async {
-    // start the SecondScreen and wait for it to finish with a result
-    JointMotorFunctionUserState updatedTestState = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => FunctionInstructions(
-                  title: title,
-                  videoPath: videoPath,
-                  testPage: JointMotorFunctionTest(
-                    title: title,
-                    testState: testState,
-                  ),
-                )));
-
-    print('shoulder: ${updatedTestState.isShoulderComplete}');
-    print('shoulder: ${updatedTestState.shoulderAngles}');
-    setState(() {
-      testState = updatedTestState;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -81,9 +57,18 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
               MotorFunctionTestButton(
                 label: 'Shoulder',
                 onPressed: () {
-                  _awaitTestResult(context, "Shoulder", defaultVideoPath);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FunctionInstructions(
+                                title: "Shoulder",
+                                videoPath: defaultVideoPath,
+                                testPage: JointMotorFunctionTest(
+                                  title: "Shoulder",
+                                ),
+                              )));
                 },
-                isCompleted: testState.isShoulderComplete,
+                isCompleted: shoulderComplete,
               ),
               const SizedBox(height: 24),
               MotorFunctionTestButton(
@@ -92,12 +77,11 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => FunctionInstructions(
+                          builder: (context) => const FunctionInstructions(
                                 title: "Elbow",
                                 videoPath: defaultVideoPath,
                                 testPage: JointMotorFunctionTest(
                                   title: "Elbow",
-                                  testState: testState,
                                 ),
                               )));
                 },
@@ -110,12 +94,11 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => FunctionInstructions(
+                          builder: (context) => const FunctionInstructions(
                                 title: "Knee",
                                 videoPath: defaultVideoPath,
                                 testPage: JointMotorFunctionTest(
                                   title: "Knee",
-                                  testState: testState,
                                 ),
                               )));
                 },

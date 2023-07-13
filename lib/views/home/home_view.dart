@@ -34,6 +34,12 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: const Text('Your Results'),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(newResultRoute);
+            },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               devtools.log(value.toString());
@@ -108,6 +114,7 @@ class _HomeViewState extends State<HomeView> {
                                 builder: (context) => const PinkySupination()));
                       },
                     ),
+                    const Text("some text"),
                   ],
                 );
               default:

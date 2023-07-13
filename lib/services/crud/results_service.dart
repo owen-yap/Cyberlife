@@ -11,6 +11,11 @@ class ResultsService {
 
   List<DatabaseResult> _results = [];
 
+  // Turning ResultsService to a Singleton
+  static final ResultsService _shared = ResultsService._sharedInstance();
+  ResultsService._sharedInstance();
+  factory ResultsService() => _shared;
+
   final _resultsStreamController =
       StreamController<List<DatabaseResult>>.broadcast();
 
@@ -139,9 +144,14 @@ class ResultsService {
     // Make sure that the result exists
     await getResult(id: result.id);
 
-    final updatesCount = await db.update(resultTable, {
-      textColumn: text,
-    });
+    final updatesCount = await db.update(
+      resultTable,
+      {
+        textColumn: text,
+      },
+      where: 'id = ?',
+      whereArgs: [result.id],
+    );
 
     if (updatesCount == 0) {
       throw CouldNotUpdateResultException();

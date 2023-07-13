@@ -37,7 +37,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Main UI'), actions: [
+      appBar: AppBar(title: const Text('Your Results'), actions: [
         PopupMenuButton<MenuAction>(
           onSelected: (value) async {
             devtools.log(value.toString());
@@ -68,48 +68,62 @@ class _HomeViewState extends State<HomeView> {
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.done:
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      child: const Text("Pain Map"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PainMap(key: UniqueKey())));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: const Text("Joint Motor Function"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const JointMotorFunctionInstructions()));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: const Text("Open-Close Test"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const OpenClose()));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: const Text("Pinky Supination Test"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PinkySupination()));
-                      },
-                    ),
-                  ],
+                return StreamBuilder(
+                  stream: _resultsService.allResults,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Text('Fetching data...');
+                      case ConnectionState.done:
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              child: const Text("Pain Map"),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PainMap(key: UniqueKey())));
+                              },
+                            ),
+                            ElevatedButton(
+                              child: const Text("Joint Motor Function"),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const JointMotorFunctionInstructions()));
+                              },
+                            ),
+                            ElevatedButton(
+                              child: const Text("Open-Close Test"),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const OpenClose()));
+                              },
+                            ),
+                            ElevatedButton(
+                              child: const Text("Pinky Supination Test"),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PinkySupination()));
+                              },
+                            ),
+                          ],
+                        );
+                      default:
+                        return const CircularProgressIndicator();
+                    }
+                  },
                 );
               default:
                 return const CircularProgressIndicator();

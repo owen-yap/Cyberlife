@@ -3,9 +3,10 @@ import 'package:cyberlife/services/auth/auth_service.dart';
 import 'package:cyberlife/views/auth/login_view.dart';
 import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
+import 'package:cyberlife/views/home/new_result_view.dart';
 import 'package:flutter/material.dart';
 import 'theme.dart';
-import 'package:cyberlife/views/home_view.dart';
+import 'package:cyberlife/views/home/home_view.dart';
 import 'dart:developer' as devtools show log;
 
 Future<void> main() async {
@@ -20,6 +21,7 @@ Future<void> main() async {
       registerRoute: (context) => const RegisterView(),
       homeRoute: (context) => const HomeView(),
       verifyEmailRoute: (context) => const VerifyEmailView(),
+      newResultRoute: (context) => const NewResultView(),
     },
   ));
 }

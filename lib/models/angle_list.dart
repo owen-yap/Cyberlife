@@ -10,6 +10,10 @@ class AngleList {
     angleList.add(x);
   }
 
+  bool isEmpty() {
+    return angleList.isEmpty;
+  }
+
   Widget generateChart() {
     AngleChart chart = AngleChart(generateSeries(angleList));
     return Expanded(

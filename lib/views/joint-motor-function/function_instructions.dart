@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:cyberlife/layout/scrollable_scaffold.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/widgets/appbar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -160,8 +157,12 @@ class _FunctionInstructionsState extends State<FunctionInstructions> {
               ElevatedButton(
                 child: const Text('Start'),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => widget.testPage));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => widget.testPage,
+                      ));
+                  // settings: RouteSettings(name: '${ModalRoute.of(context)!.settings.name}test')));
                 },
               ),
               const SizedBox(height: 48),

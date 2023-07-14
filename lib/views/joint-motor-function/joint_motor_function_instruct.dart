@@ -1,4 +1,5 @@
 
+import 'package:cyberlife/constants/routes.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_main.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,9 @@ class JointMotorFunctionInstructions extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const JointMotorFunctionMain()));
+                          builder: (context) => const JointMotorFunctionMain(),
+                          settings: const RouteSettings(name: jointMotorFunctionMainRoute)
+                          ));
                 },
               ),
               const Expanded(

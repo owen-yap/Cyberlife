@@ -1,18 +1,21 @@
-// ignore_for_file: file_names
-
 import 'dart:async';
 import 'dart:math';
 import 'package:cyberlife/components/stopwatch_circle.dart';
+import 'package:cyberlife/constants/routes.dart';
+import 'package:cyberlife/constants/strings.dart';
+import 'package:cyberlife/enums/joint_motor_function/joints.dart';
+import 'package:cyberlife/models/app_state.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:cyberlife/models/angle_list.dart';
 
 class JointMotorFunctionTest extends StatefulWidget {
-  final String title;
+  final Joints joint;
 
-  const JointMotorFunctionTest({Key? key, required this.title})
+  const JointMotorFunctionTest({Key? key, required this.joint})
       : super(key: key);
 
   @override
@@ -57,8 +60,11 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
 
   @override
   Widget build(BuildContext context) {
-    CommonAppBar appBar = CommonAppBar(title: "${widget.title} Test");
+    String jointString = Strings.fromJointEnum[widget.joint]!;
+    CommonAppBar appBar = CommonAppBar(title: "$jointString Test");
     final accelerometer = _accelerometerValues?.toList();
+
+    final appStateNotifier = Provider.of<AppStateNotifier>(context);
 
     return Scaffold(
       appBar: appBar,
@@ -129,6 +135,13 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                             ),
                         onPressed: () {
                           // TODO: Bring up confirmation dialog, then pop till joint motor function main page
+                          appStateNotifier.markJointTest(
+                              widget.joint, true, aList);
+                          Navigator.popUntil(
+                              context,
+                              ((route) =>
+                                  route.settings.name ==
+                                  jointMotorFunctionMainRoute));
                         },
                         child: Text(
                           "Submit",

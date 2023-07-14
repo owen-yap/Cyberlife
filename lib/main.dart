@@ -6,10 +6,11 @@ import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
 import 'package:cyberlife/views/joint-motor-function/function_instructions.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_main.dart';
+import 'package:cyberlife/views/home/new_result_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'theme.dart';
-import 'package:cyberlife/views/home_view.dart';
+import 'package:cyberlife/views/home/home_view.dart';
 import 'dart:developer' as devtools show log;
 
 Future<void> main() async {
@@ -28,10 +29,12 @@ Future<void> main() async {
             homeRoute: (context) => const HomeView(),
             verifyEmailRoute: (context) => const VerifyEmailView(),
             jointMotorFunctionMainRoute: (context) =>
-                const JointMotorFunctionMain()
+                const JointMotorFunctionMain(),
+            newResultRoute: (context) => const NewResultView(),
           },
         );
       }));
+
 }
 
 class HomePage extends StatelessWidget {

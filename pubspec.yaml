@@ -49,7 +49,7 @@ dependencies:
       url: https://github.com/pnyompen/tflite_flutter_helper.git
       ref: 43e87d4b9627539266dc20250beb35bf36320dce
   video_player: ^2.2.0
-  provider: ^4.3.2
+  provider: ^6.0.5
 dev_dependencies:
   flutter_test:
     sdk: flutter

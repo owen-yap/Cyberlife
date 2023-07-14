@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
@@ -159,7 +158,11 @@ class _FunctionInstructionsState extends State<FunctionInstructions> {
                 child: const Text('Start'),
                 onPressed: () {
                   Navigator.push(
-        context, MaterialPageRoute(builder: (context) => widget.testPage));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => widget.testPage,
+                      ));
+                  // settings: RouteSettings(name: '${ModalRoute.of(context)!.settings.name}test')));
                 },
               ),
               const SizedBox(height: 48),

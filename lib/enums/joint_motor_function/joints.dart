@@ -1,0 +1,1 @@
+enum Joints { shoulder, elbow, knee }

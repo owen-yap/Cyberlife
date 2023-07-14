@@ -1,39 +1,26 @@
+import 'package:cyberlife/enums/joint_motor_function/joints.dart';
 import 'package:cyberlife/models/angle_list.dart';
-import 'package:flutter/material.dart';
 
 class JointMotorFunctionUserState {
-  List<Function> listeners = <Function>[];
+  Map<Joints, Map<String, dynamic>> stateMap = {
+    for (Joints joint in Joints.values)
+      joint: {'completed': false, 'angleList': AngleList()},
+  };
 
-  bool shoulderComplete = false;
-  AngleList shoulderAngles = AngleList();
-  bool elbowComplete = false;
-  AngleList elbowAngles = AngleList();
-  bool kneeComplete = false;
-  AngleList kneeAngles = AngleList();
+  bool get isShoulderComplete => stateMap[Joints.shoulder]!['completed'];
+  AngleList get shoulderAngleList => stateMap[Joints.shoulder]!['angleList'];
 
-  bool get isShoulderComplete => shoulderComplete;
-  AngleList get shoulderAngleList => shoulderAngles;
-  bool get isElbowComplete => elbowComplete;
-  AngleList get elbowAngleList => elbowAngles;
-  bool get isKneeComplete => kneeComplete;
-  AngleList get kneeAngleList => kneeAngles;
+  bool get isElbowComplete => stateMap[Joints.elbow]!['completed'];
+  AngleList get elbowAngleList => stateMap[Joints.elbow]!['angleList'];
+
+  bool get isKneeComplete => stateMap[Joints.knee]!['completed'];
+  AngleList get kneeAngleList => stateMap[Joints.knee]!['angleList'];
 
   // TODO: Repalce with one function + enums
-  void markShoulderTest(bool completed, AngleList? angles) {
-    assert(!(completed && angles == null));
-    shoulderComplete = completed;
-    shoulderAngles = angles ?? AngleList();
-  }
-
-  void markElbowTest(bool completed, AngleList? angles) {
-    assert(!(completed && angles == null));
-    elbowComplete = completed;
-    elbowAngles = angles ?? AngleList();
-  }
-
-  void markKneeTest(bool completed, AngleList? angles) {
-    assert(!(completed && angles == null));
-    kneeComplete = completed;
-    kneeAngles = angles ?? AngleList();
+  void markJointTest(Joints joint, bool completed, AngleList angles) {
+    // CLEAN THIS UP MORE, use dict ah
+    Map<String, dynamic> jointState = stateMap[joint]!;
+    jointState["completed"] = completed;
+    jointState["angleList"] = completed ? angles : AngleList();
   }
 }

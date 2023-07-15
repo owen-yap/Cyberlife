@@ -1,3 +1,4 @@
+import 'package:cyberlife/components/auth/auth_button.dart';
 import 'package:cyberlife/components/auth/auth_textfield.dart';
 import 'package:flutter/material.dart';
 
@@ -126,19 +127,7 @@ class _LoginViewState extends State<LoginView> {
               child: Container(
             color: Colors.grey.shade100,
           )),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: ElevatedButton(
-              onPressed: logIn,
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                minimumSize: const Size.fromHeight(50),
-              ),
-              child: const Text('Login'),
-            ),
-          ),
+          AuthButton(onPressed: logIn, text: 'Login'),
           const SizedBox(height: 40),
         ],
       ),

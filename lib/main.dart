@@ -34,7 +34,6 @@ Future<void> main() async {
           },
         );
       }));
-
 }
 
 class HomePage extends StatelessWidget {
@@ -43,28 +42,27 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
         body: FutureBuilder(
-          future: AuthService.firebase().initialize(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                final user = AuthService.firebase().currentUser;
-                if (user != null) {
-                  devtools.log(user.toString());
-                  if (user.isEmailVerified) {
-                    return const HomeView();
-                  } else {
-                    return const VerifyEmailView();
-                  }
-                } else {
-                  return const LoginView();
-                }
-
-              default:
-                return const CircularProgressIndicator();
+      future: AuthService.firebase().initialize(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            final user = AuthService.firebase().currentUser;
+            if (user != null) {
+              devtools.log(user.toString());
+              if (user.isEmailVerified) {
+                return const HomeView();
+              } else {
+                return const VerifyEmailView();
+              }
+            } else {
+              return const LoginView();
             }
-          },
-        ));
+
+          default:
+            return const CircularProgressIndicator();
+        }
+      },
+    ));
   }
 }

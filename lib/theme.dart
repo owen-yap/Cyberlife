@@ -28,12 +28,11 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     primarySwatch: Colors.blue,
     fontFamily: 'Roboto',
-    textTheme:
-        TextTheme(
-          displaySmall: displaySmall,
-          displayMedium: displayMedium,
-          displayLarge: displayLarge,
-          bodyMedium: bodyMedium),
+    textTheme: TextTheme(
+        displaySmall: displaySmall,
+        displayMedium: displayMedium,
+        displayLarge: displayLarge,
+        bodyMedium: bodyMedium),
     buttonTheme: ButtonThemeData(
       buttonColor: lightGreen,
       textTheme: ButtonTextTheme.primary,
@@ -44,7 +43,7 @@ class AppTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(vertical: 30.0, horizontal: 48.0),
+          const EdgeInsets.symmetric(vertical: 15.0, horizontal: 100.0),
         ),
         backgroundColor: MaterialStateProperty.all(lightGreen),
         foregroundColor: MaterialStateProperty.all(navy),

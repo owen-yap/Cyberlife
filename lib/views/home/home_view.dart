@@ -114,7 +114,6 @@ class _HomeViewState extends State<HomeView> {
                                 builder: (context) => const PinkySupination()));
                       },
                     ),
-                    const Text("some text"),
                   ],
                 );
               default:

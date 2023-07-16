@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:cyberlife/components/home/test_navigation_card.dart';
 import 'package:cyberlife/constants/routes.dart';
 import 'package:cyberlife/enums/menu_action.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
@@ -73,49 +74,79 @@ class _HomeViewState extends State<HomeView> {
               case ConnectionState.waiting:
                 return const CircularProgressIndicator();
               case ConnectionState.done:
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      child: const Text("Pain Map"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PainMap(key: UniqueKey())));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: const Text("Joint Motor Function"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const JointMotorFunctionInstructions()));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: const Text("Open-Close Test"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const OpenClose()));
-                      },
-                    ),
-                    ElevatedButton(
-                      child: const Text("Pinky Supination Test"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const PinkySupination()));
-                      },
-                    ),
-                    const Text("some text"),
-                  ],
+                return Padding(
+                  padding: const EdgeInsets.all(30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Please complete all of the tests below',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          )),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TestNavigationCard(
+                            testIconFilePath:
+                                'assets/images/png/painMapIcon.png',
+                            testName: 'Pain Map',
+                            testTime: '5 mins',
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PainMap(key: UniqueKey())));
+                            },
+                          ),
+                          TestNavigationCard(
+                            testIconFilePath: 'assets/images/png/romIcon.png',
+                            testName: 'Range of Motion',
+                            testTime: '10 mins',
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const JointMotorFunctionInstructions()));
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TestNavigationCard(
+                            testIconFilePath: 'assets/images/png/fistIcon.png',
+                            testName: 'Grip and Release',
+                            testTime: '10 mins',
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const OpenClose()));
+                            },
+                          ),
+                          TestNavigationCard(
+                            testIconFilePath:
+                                'assets/images/png/fingerEscapeIcon.png',
+                            testName: 'Finger Escape',
+                            testTime: '10 mins',
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const PinkySupination()));
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
               default:
                 return const CircularProgressIndicator();

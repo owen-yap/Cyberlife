@@ -1,3 +1,5 @@
+import 'package:cyberlife/components/auth/auth_button.dart';
+import 'package:cyberlife/components/auth/auth_textfield.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cyberlife/constants/routes.dart';
@@ -31,71 +33,57 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  void logIn() async {
+    final email = _email.text;
+    final password = _password.text;
+    try {
+      await AuthService.firebase().logIn(
+        email: email,
+        password: password,
+      );
+      final user = AuthService.firebase().currentUser;
+      if (context.mounted) {
+        if (user?.isEmailVerified ?? false) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            homeRoute,
+            (route) => false,
+          );
+        } else {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            verifyEmailRoute,
+            (route) => false,
+          );
+        }
+      }
+    } on UserNotFoundAuthException {
+      await showErrorDialog(
+        context,
+        'User not found',
+      );
+    } on WrongPasswordAuthException {
+      await showErrorDialog(
+        context,
+        'Wrong credentials',
+      );
+    } on GenericAuthException {
+      await showErrorDialog(
+        context,
+        'Authentication error',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
-          TextField(
-            controller: _email,
-            enableSuggestions: false,
-            autocorrect: false,
-            keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: 'Enter your email here',
-            ),
-          ),
-          TextField(
-            controller: _password,
-            obscureText: true,
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: const InputDecoration(
-              hintText: 'Enter your password here',
-            ),
-          ),
-          TextButton(
-            onPressed: () async {
-              final email = _email.text;
-              final password = _password.text;
-              try {
-                await AuthService.firebase().logIn(
-                  email: email,
-                  password: password,
-                );
-                final user = AuthService.firebase().currentUser;
-                if (context.mounted) {
-                  if (user?.isEmailVerified ?? false) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      homeRoute,
-                      (route) => false,
-                    );
-                  } else {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                      verifyEmailRoute,
-                      (route) => false,
-                    );
-                  }
-                }
-              } on UserNotFoundAuthException {
-                await showErrorDialog(
-                  context,
-                  'User not found',
-                );
-              } on WrongPasswordAuthException {
-                await showErrorDialog(
-                  context,
-                  'Wrong credentials',
-                );
-              } on GenericAuthException {
-                await showErrorDialog(
-                  context,
-                  'Authentication error',
-                );
-              }
-            },
-            child: const Text('Login'),
+          const SizedBox(height: 100),
+          const Text(
+            "Welcome back",
+            style: TextStyle(
+                color: Colors.black, fontSize: 32, fontWeight: FontWeight.bold),
           ),
           TextButton(
             onPressed: () {
@@ -105,7 +93,42 @@ class _LoginViewState extends State<LoginView> {
               );
             },
             child: const Text("Don't have an account? Register Here"),
-          )
+          ),
+          const SizedBox(height: 50),
+          AuthTextField(
+            controller: _email,
+            hintText: 'Email',
+            obscureText: false,
+          ),
+          const SizedBox(height: 10),
+          AuthTextField(
+            controller: _password,
+            hintText: 'Password',
+            obscureText: true,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      registerRoute,
+                      (route) => false,
+                    );
+                  },
+                  child: const Text("Forgot Password?"),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+              child: Container(
+            color: Colors.grey.shade100,
+          )),
+          AuthButton(onPressed: logIn, text: 'Login'),
+          const SizedBox(height: 40),
         ],
       ),
     );

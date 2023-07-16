@@ -6,6 +6,7 @@ import 'package:cyberlife/constants/strings.dart';
 import 'package:cyberlife/enums/joint_motor_function/joints.dart';
 import 'package:cyberlife/models/app_state.dart';
 import 'package:cyberlife/theme.dart';
+import 'package:cyberlife/views/joint-motor-function/joint_motor_function_results.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -119,9 +120,8 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                       stopwatchRunning ? "Stop" : "Start",
                       style: Theme.of(context).textTheme.displayMedium,
                     )),
-                stopwatchRunning || aList.isEmpty()
-                    ? const SizedBox.shrink()
-                    : ElevatedButton(
+                !stopwatchRunning && !aList.isEmpty()
+                    ? ElevatedButton(
                         style: Theme.of(context)
                             .elevatedButtonTheme
                             .style!
@@ -134,19 +134,20 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                                   const CircleBorder(side: BorderSide.none)),
                             ),
                         onPressed: () {
-                          // TODO: Bring up confirmation dialog, then pop till joint motor function main page
-                          appStateNotifier.markJointTest(
-                              widget.joint, true, aList);
-                          Navigator.popUntil(
+                          Navigator.push(
                               context,
-                              ((route) =>
-                                  route.settings.name ==
-                                  jointMotorFunctionMainRoute));
+                              MaterialPageRoute(
+                                builder: (context) => JointMotorFunctionResults(
+                                  joint: widget.joint,
+                                  angleList: aList,
+                                ),
+                              ));
                         },
                         child: Text(
-                          "Submit",
+                          "Continue",
                           style: Theme.of(context).textTheme.displayMedium,
-                        )),
+                        ))
+                    : const SizedBox.shrink(),
               ],
             ),
             const Expanded(

@@ -22,8 +22,8 @@ class TestNavigationCard extends StatelessWidget {
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            height: 175,
-            width: 175,
+            height: 180,
+            width: 150,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),

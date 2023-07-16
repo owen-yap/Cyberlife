@@ -7,7 +7,6 @@ class AppStateNotifier extends ChangeNotifier {
   final JointMotorFunctionUserState _jointMotorFunctionTestState =
       JointMotorFunctionUserState();
 
-  // TODO: Remove this in production, as they may not need direct access.
   JointMotorFunctionUserState get jointMotorFunctionTestState =>
       _jointMotorFunctionTestState;
 

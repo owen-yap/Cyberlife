@@ -5,6 +5,7 @@ import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/models/app_state.dart';
 import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:cyberlife/views/joint-motor-function/function_instructions.dart';
+import 'package:cyberlife/views/joint-motor-function/joint_motor_function_results.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_test.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
@@ -54,63 +55,21 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                 ),
                 const SizedBox(height: 48),
                 MotorFunctionTestButton(
-                  label: Strings.fromJointEnum[Joints.shoulder]!,
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FunctionInstructions(
-                            title: Strings.fromJointEnum[Joints.shoulder]!,
-                            videoPath: defaultVideoPath,
-                            testPage: const JointMotorFunctionTest(
-                              joint: Joints.shoulder,
-                            ),
-                          ),
-                        ));
-                    // settings: const RouteSettings(name: shoulderInstructionsRoute)));
-                  },
-                  isCompleted:
-                      notifier.jointMotorFunctionTestState.isShoulderComplete,
+                  joint: Joints.shoulder,
+                  jointMotorFunctionTestState: notifier.jointMotorFunctionTestState,
+                  defaultVideoPath: defaultVideoPath,
                 ),
                 const SizedBox(height: 24),
                 MotorFunctionTestButton(
-                  label: Strings.fromJointEnum[Joints.elbow]!,
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FunctionInstructions(
-                            title: Strings.fromJointEnum[Joints.elbow]!,
-                            videoPath: defaultVideoPath,
-                            testPage: const JointMotorFunctionTest(
-                              joint: Joints.elbow,
-                            ),
-                          ),
-                        ));
-                    // settings: const RouteSettings(name: shoulderInstructionsRoute)));
-                  },
-                  isCompleted:
-                      notifier.jointMotorFunctionTestState.isElbowComplete,
+                  joint: Joints.elbow,
+                  jointMotorFunctionTestState: notifier.jointMotorFunctionTestState,
+                  defaultVideoPath: defaultVideoPath,
                 ),
                 const SizedBox(height: 24),
                 MotorFunctionTestButton(
-                  label: Strings.fromJointEnum[Joints.knee]!,
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => FunctionInstructions(
-                            title: Strings.fromJointEnum[Joints.knee]!,
-                            videoPath: defaultVideoPath,
-                            testPage: const JointMotorFunctionTest(
-                              joint: Joints.knee,
-                            ),
-                          ),
-                        ));
-                    // settings: const RouteSettings(name: shoulderInstructionsRoute)));
-                  },
-                  isCompleted:
-                      notifier.jointMotorFunctionTestState.isKneeComplete,
+                  joint: Joints.knee,
+                  jointMotorFunctionTestState: notifier.jointMotorFunctionTestState,
+                  defaultVideoPath: defaultVideoPath,
                 ),
                 const Expanded(
                   child: SizedBox(),

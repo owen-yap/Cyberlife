@@ -119,6 +119,7 @@ class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
                             vertical: 18.0, horizontal: 48.0),
                       )),
                       onPressed: () {
+                        appStateNotifier.resetJointTest(widget.joint);
                         Navigator.pop(context);
                       },
                       child: Text(

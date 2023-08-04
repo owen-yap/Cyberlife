@@ -10,9 +10,13 @@ class AppStateNotifier extends ChangeNotifier {
   JointMotorFunctionUserState get jointMotorFunctionTestState =>
       _jointMotorFunctionTestState;
 
-  /// Always call this function after changing any state within AppStateNotifier
   void markJointTest(Joints joint, bool completed, AngleList aList) {
     _jointMotorFunctionTestState.markJointTest(joint, completed, aList);
+    notifyListeners();
+  }
+
+  void resetJointTest(Joints joint) {
+    _jointMotorFunctionTestState.resetJointTest(joint);
     notifyListeners();
   }
 }

@@ -99,37 +99,45 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
             ),
             const SizedBox(height: 36),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Expanded(child: SizedBox(width: 10,)),
+                const Expanded(
+                    child: SizedBox(
+                  width: 10,
+                )),
                 ElevatedButton(
-                    style:
-                        Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                              backgroundColor: stopwatchRunning
-                                  ? const MaterialStatePropertyAll(AppTheme.red)
-                                  : const MaterialStatePropertyAll(
-                                      AppTheme.lightGreen),
-                              padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    vertical: 56.0, horizontal: 56.0),
-                              ),
-                              shape: MaterialStateProperty.all(
-                                  const CircleBorder(side: BorderSide.none)),
-                            ),
+                    style: Theme.of(context)
+                        .elevatedButtonTheme
+                        .style!
+                        .copyWith(
+                          minimumSize: const MaterialStatePropertyAll(Size(
+                              150, 150)), // Set the desired width and height
+                          backgroundColor: stopwatchRunning
+                              ? const MaterialStatePropertyAll(AppTheme.red)
+                              : const MaterialStatePropertyAll(
+                                  AppTheme.lightGreen),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(vertical: 56.0),
+                          ),
+                          shape: MaterialStateProperty.all(
+                              const CircleBorder(side: BorderSide.none)),
+                        ),
                     onPressed: toggleRecording,
                     child: Text(
                       stopwatchRunning ? "Stop" : "Start",
                       style: Theme.of(context).textTheme.displayMedium,
                     )),
+                const SizedBox(width: 16),
                 !stopwatchRunning && !aList.isEmpty()
                     ? ElevatedButton(
                         style: Theme.of(context)
                             .elevatedButtonTheme
                             .style!
                             .copyWith(
+                              minimumSize: const MaterialStatePropertyAll(
+                                  Size(150, 150)), //
                               padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    vertical: 56.0, horizontal: 56.0),
+                                const EdgeInsets.symmetric(vertical: 56.0),
                               ),
                               shape: MaterialStateProperty.all(
                                   const CircleBorder(side: BorderSide.none)),
@@ -149,7 +157,10 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                           style: Theme.of(context).textTheme.displayMedium,
                         ))
                     : const SizedBox.shrink(),
-                const Expanded(child: SizedBox(width: 10,)),
+                const Expanded(
+                    child: SizedBox(
+                  width: 10,
+                )),
               ],
             ),
             const Expanded(

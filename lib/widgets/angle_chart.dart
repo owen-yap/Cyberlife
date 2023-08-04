@@ -10,7 +10,9 @@ class AngleChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
-      primaryXAxis: NumericAxis(),
+      primaryXAxis: NumericAxis(
+        isVisible: false, // Set the X-axis labels to be invisible
+      ),
       series: <LineSeries<AngleSeries, int>>[
         LineSeries<AngleSeries, int>(
           dataSource: data,

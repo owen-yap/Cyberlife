@@ -101,6 +101,7 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Expanded(child: SizedBox(width: 10,)),
                 ElevatedButton(
                     style:
                         Theme.of(context).elevatedButtonTheme.style!.copyWith(
@@ -148,6 +149,7 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                           style: Theme.of(context).textTheme.displayMedium,
                         ))
                     : const SizedBox.shrink(),
+                const Expanded(child: SizedBox(width: 10,)),
               ],
             ),
             const Expanded(

@@ -6,6 +6,7 @@ import 'package:cyberlife/constants/strings.dart';
 import 'package:cyberlife/enums/joint_motor_function/joints.dart';
 import 'package:cyberlife/models/app_state.dart';
 import 'package:cyberlife/theme.dart';
+import 'package:cyberlife/views/joint-motor-function/joint_motor_function_results.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -98,55 +99,68 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
             ),
             const SizedBox(height: 36),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                const Expanded(
+                    child: SizedBox(
+                  width: 10,
+                )),
                 ElevatedButton(
-                    style:
-                        Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                              backgroundColor: stopwatchRunning
-                                  ? const MaterialStatePropertyAll(AppTheme.red)
-                                  : const MaterialStatePropertyAll(
-                                      AppTheme.lightGreen),
-                              padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    vertical: 56.0, horizontal: 56.0),
-                              ),
-                              shape: MaterialStateProperty.all(
-                                  const CircleBorder(side: BorderSide.none)),
-                            ),
+                    style: Theme.of(context)
+                        .elevatedButtonTheme
+                        .style!
+                        .copyWith(
+                          minimumSize: const MaterialStatePropertyAll(Size(
+                              150, 150)), // Set the desired width and height
+                          backgroundColor: stopwatchRunning
+                              ? const MaterialStatePropertyAll(AppTheme.red)
+                              : const MaterialStatePropertyAll(
+                                  AppTheme.lightGreen),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(vertical: 56.0),
+                          ),
+                          shape: MaterialStateProperty.all(
+                              const CircleBorder(side: BorderSide.none)),
+                        ),
                     onPressed: toggleRecording,
                     child: Text(
                       stopwatchRunning ? "Stop" : "Start",
                       style: Theme.of(context).textTheme.displayMedium,
                     )),
-                stopwatchRunning || aList.isEmpty()
-                    ? const SizedBox.shrink()
-                    : ElevatedButton(
+                const SizedBox(width: 16),
+                !stopwatchRunning && !aList.isEmpty()
+                    ? ElevatedButton(
                         style: Theme.of(context)
                             .elevatedButtonTheme
                             .style!
                             .copyWith(
+                              minimumSize: const MaterialStatePropertyAll(
+                                  Size(150, 150)), //
                               padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    vertical: 56.0, horizontal: 56.0),
+                                const EdgeInsets.symmetric(vertical: 56.0),
                               ),
                               shape: MaterialStateProperty.all(
                                   const CircleBorder(side: BorderSide.none)),
                             ),
                         onPressed: () {
-                          // TODO: Bring up confirmation dialog, then pop till joint motor function main page
-                          appStateNotifier.markJointTest(
-                              widget.joint, true, aList);
-                          Navigator.popUntil(
+                          Navigator.push(
                               context,
-                              ((route) =>
-                                  route.settings.name ==
-                                  jointMotorFunctionMainRoute));
+                              MaterialPageRoute(
+                                builder: (context) => JointMotorFunctionResults(
+                                  joint: widget.joint,
+                                  angleList: aList,
+                                ),
+                              ));
                         },
                         child: Text(
-                          "Submit",
+                          "Continue",
                           style: Theme.of(context).textTheme.displayMedium,
-                        )),
+                        ))
+                    : const SizedBox.shrink(),
+                const Expanded(
+                    child: SizedBox(
+                  width: 10,
+                )),
               ],
             ),
             const Expanded(

@@ -47,6 +47,7 @@ class _StopwatchCircleState extends State<StopwatchCircle> {
   }
 
   void startStopwatch() {
+    _stopwatch.reset();
     _stopwatch.start();
 
     _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {

@@ -130,6 +130,9 @@ class _OpenCloseState extends State<OpenClose> {
 
   void pointsCallback(
       List<double> points, int width, int height, bool handedness) {
+    if (!mounted) {
+      return;
+    }
     setState(() {
       handLandmarks = HandLandmarks(
           handedness: handedness,

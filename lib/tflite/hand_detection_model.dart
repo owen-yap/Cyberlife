@@ -9,6 +9,7 @@ import 'package:cyberlife/utils/image_utils.dart';
 // this function loads the model
 class HandDetection {
   static const String MODEL_FILE_NAME = "hand_landmark_full.tflite";
+  // static const String MODEL_FILE_NAME = "hand_landmarker.task";
   static const int IMAGE_SIZE = 224;
   static const double THRESHOLD = 0.3;
 
@@ -110,7 +111,8 @@ class HandDetection {
 
     interpreter!.runForMultipleInputs(inputs, outputs);
 
-    //print(outputHandedness.getDoubleValue(0));
+    print(outputHandedness.getDoubleValue(0));
+    // print(outputScreenLandmarks.getDoubleList());
 
     if (enableThreshold && outputScore.getDoubleValue(0) < THRESHOLD) {
       return {};

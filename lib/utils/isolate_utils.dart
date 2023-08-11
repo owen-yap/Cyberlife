@@ -30,6 +30,8 @@ class IsolateUtils {
     final port = ReceivePort();
     sendPort.send(port.sendPort);
 
+    // Receives stream of data from main port and processes it
+    // Performs inference
     await for (final IsolateData isolateData in port) {
       if (isolateData != null) {
         HandDetection handDetector = HandDetection.fromInterpreter(

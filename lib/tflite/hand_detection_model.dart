@@ -111,7 +111,7 @@ class HandDetection {
 
     interpreter!.runForMultipleInputs(inputs, outputs);
 
-    print(outputHandedness.getDoubleValue(0));
+    // print(outputHandedness.getDoubleValue(0));
     // print(outputScreenLandmarks.getDoubleList());
 
     if (enableThreshold && outputScore.getDoubleValue(0) < THRESHOLD) {

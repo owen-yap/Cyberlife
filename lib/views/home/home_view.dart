@@ -5,8 +5,9 @@ import 'package:cyberlife/constants/routes.dart';
 import 'package:cyberlife/enums/menu_action.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
 import 'package:cyberlife/services/cloud/firebase_cloud_storage.dart';
+import 'package:cyberlife/views/grip-release-test/grip_release_instruct.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_instruct.dart';
-import 'package:cyberlife/views/open_close.dart';
+import 'package:cyberlife/views/grip-release-test/grip_release_test.dart';
 import 'package:cyberlife/views/pain_map.dart';
 import 'package:cyberlife/views/pinky_supination.dart';
 import 'package:flutter/material.dart';
@@ -127,7 +128,7 @@ class _HomeViewState extends State<HomeView> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const OpenClose()));
+                                      builder: (context) => const GripReleaseInstructions()));
                             },
                           ),
                           TestNavigationCard(

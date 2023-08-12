@@ -78,7 +78,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
   }
 
   void onLatestImageAvailable(CameraImage cameraImage) async {
-    if (processing || handDetector.interpreter == null) {
+    if (processing || handDetector.interpreter == null || !mounted) {
       return;
     }
 
@@ -103,6 +103,11 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
         imageLib.encodeJpg(debugImage) as Uint8List));*/
 
     await Future.delayed(Duration(milliseconds: 66));
+
+    // Prevents setState after dispose is called
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       processing = false;

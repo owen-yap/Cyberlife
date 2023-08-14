@@ -128,7 +128,7 @@ class _LoginViewState extends State<LoginView> {
             color: Colors.grey.shade100,
           )),
           AuthButton(onPressed: logIn, text: 'Login'),
-          const SizedBox(height: 40),
+          const SizedBox(height: 25),
         ],
       ),
     );

@@ -16,14 +16,16 @@ class TestNavigationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
-            height: 180,
-            width: 150,
+            height: screenWidth * 0.45,
+            width: screenWidth * 0.4,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),

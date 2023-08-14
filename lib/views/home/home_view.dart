@@ -128,7 +128,8 @@ class _HomeViewState extends State<HomeView> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const GripReleaseInstructions()));
+                                      builder: (context) =>
+                                          const GripReleaseInstructions()));
                             },
                           ),
                           TestNavigationCard(

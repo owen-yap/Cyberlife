@@ -60,7 +60,6 @@ class HandDetection {
   Future<void> loadTensors() async {
     var outputTensors = interpreter!.getOutputTensors();
 
-    //print(outputTensors);
 
     outputTensors.forEach((tensor) {
       _outputShapes.add(tensor.shape);
@@ -111,8 +110,6 @@ class HandDetection {
 
     interpreter!.runForMultipleInputs(inputs, outputs);
 
-    // print(outputHandedness.getDoubleValue(0));
-    // print(outputScreenLandmarks.getDoubleList());
 
     if (enableThreshold && outputScore.getDoubleValue(0) < THRESHOLD) {
       return {};

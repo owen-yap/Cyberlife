@@ -1,6 +1,3 @@
-import 'package:cyberlife/constants/routes.dart';
-import 'package:cyberlife/constants/strings.dart';
-import 'package:cyberlife/enums/joint_motor_function/joints.dart';
 import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/models/app_state.dart';
 import 'package:cyberlife/widgets/appbar.dart';
@@ -8,20 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class JointMotorFunctionResults extends StatefulWidget {
-  final Joints joint;
-  final AngleList angleList;
+class FingerEscapeResults extends StatefulWidget {
+  final AngleList supinationAngleList;
 
-  const JointMotorFunctionResults(
-      {Key? key, required this.joint, required this.angleList})
+  const FingerEscapeResults({Key? key, required this.supinationAngleList})
       : super(key: key);
 
   @override
-  State<JointMotorFunctionResults> createState() =>
-      _JointMotorFunctionResultsState();
+  State<FingerEscapeResults> createState() => _FingerEscapeResultsState();
 }
 
-class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
+class _FingerEscapeResultsState extends State<FingerEscapeResults> {
   @override
   void initState() {
     super.initState();
@@ -29,8 +23,8 @@ class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
 
   @override
   Widget build(BuildContext context) {
-    String jointString = Strings.fromJointEnum[widget.joint]!;
-    CommonAppBar appBar = CommonAppBar(title: "Results ($jointString)");
+    CommonAppBar appBar =
+        const CommonAppBar(title: "Results (Finger Escape Test)");
 
     final appStateNotifier = Provider.of<AppStateNotifier>(context);
 
@@ -44,9 +38,6 @@ class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
       String dateString = dateFormat.format(now);
       String timeString = timeFormat.format(now);
 
-      String minAngle = "${widget.angleList.minAngle().toStringAsFixed(1)} deg";
-      String maxAngle = "${widget.angleList.maxAngle().toStringAsFixed(1)} deg";
-
       return Scaffold(
           appBar: appBar,
           body: Container(
@@ -55,7 +46,9 @@ class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 36),
+                  const Expanded(
+                    child: SizedBox(height: 30),
+                  ),
                   Text(
                     dateString,
                     style: theme.textTheme.bodyMedium,
@@ -66,46 +59,15 @@ class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
                     style: theme.textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
-                  const Expanded(
-                    child: SizedBox(height: 30),
+                  const SizedBox(height: 36),
+                  Text(
+                    "Finger Supination Angle Chart",
+                    style: theme.textTheme.displayMedium,
+                    textAlign: TextAlign.center,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            "Minimum Angle",
-                            style: theme.textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            minAngle,
-                            style: theme.textTheme.displayMedium,
-                          )
-                        ],
-                      ),
-                      const SizedBox(width: 30),
-                      Column(
-                        children: [
-                          Text(
-                            "Maximum Angle",
-                            style: theme.textTheme.bodyLarge,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            maxAngle,
-                            style: theme.textTheme.displayMedium,
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Expanded(
-                    child: SizedBox(height: 30),
-                  ),
+                  const SizedBox(height: 16),
                   SizedBox(
-                      height: 200, child: widget.angleList.generateChart()),
+                      height: 200, child: widget.supinationAngleList.generateChart()),
                   const Expanded(
                     child: SizedBox(height: 30),
                   ),
@@ -116,7 +78,7 @@ class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
                             vertical: 18.0, horizontal: 48.0),
                       )),
                       onPressed: () {
-                        appStateNotifier.resetJointTest(widget.joint);
+                        appStateNotifier.resetGripRelease();
                         Navigator.pop(context);
                       },
                       child: Text(
@@ -131,13 +93,9 @@ class _JointMotorFunctionResultsState extends State<JointMotorFunctionResults> {
                             vertical: 18.0, horizontal: 48.0),
                       )),
                       onPressed: () {
-                        appStateNotifier.markJointTest(
-                            widget.joint, true, widget.angleList);
-                        Navigator.popUntil(
-                            context,
-                            ((route) =>
-                                route.settings.name ==
-                                jointMotorFunctionMainRoute));
+                        appStateNotifier.recordFingerEscape(widget.supinationAngleList);
+                        Navigator.popUntil(context,
+                            ((route) => route.isFirst));
                       },
                       child: Text(
                         "Submit",

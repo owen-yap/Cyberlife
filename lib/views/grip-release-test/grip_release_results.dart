@@ -1,9 +1,4 @@
-import 'package:cyberlife/constants/routes.dart';
-import 'package:cyberlife/constants/strings.dart';
-import 'package:cyberlife/enums/joint_motor_function/joints.dart';
-import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/models/app_state.dart';
-import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

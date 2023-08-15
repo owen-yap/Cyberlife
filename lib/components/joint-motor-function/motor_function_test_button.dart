@@ -1,6 +1,5 @@
 import 'package:cyberlife/constants/strings.dart';
 import 'package:cyberlife/enums/joint_motor_function/joints.dart';
-import 'package:cyberlife/models/app_state.dart';
 import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/views/joint-motor-function/function_instructions.dart';

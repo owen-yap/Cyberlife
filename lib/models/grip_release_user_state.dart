@@ -1,7 +1,3 @@
-import 'package:cyberlife/enums/joint_motor_function/joints.dart';
-import 'package:cyberlife/models/angle_list.dart';
-import 'package:cyberlife/views/grip-release-test/grip_release_test.dart';
-
 class GripReleaseUserState {
   int defaultValue = -1;
   late int fistsMade;
@@ -11,7 +7,7 @@ class GripReleaseUserState {
     fistsMade = defaultValue;
   }
 
-  bool isComplete(Joints joint) {
+  bool isComplete() {
     return complete;
   }
 
@@ -27,5 +23,15 @@ class GripReleaseUserState {
   void reset() {
     fistsMade = -1;
     complete = false;
+  }
+
+  @override
+  String toString() {
+    String result = "Grip Release User State:\n";
+
+    result += "complete? $complete \n";
+    result += "fistsMade: $fistsMade \n";
+
+    return result;
   }
 }

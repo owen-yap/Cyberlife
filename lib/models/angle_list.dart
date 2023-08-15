@@ -40,4 +40,13 @@ class AngleList {
     AngleChart chart = AngleChart(generateSeries(angleList));
     return chart;
   }
+
+  @override
+  String toString() {
+    String result = "";
+    String minAngleString = minAngle().toStringAsFixed(3);
+    String maxAngleString = maxAngle().toStringAsFixed(3);
+    result += "Min - $minAngleString, Max - $maxAngleString, List - $angleList";
+    return result;
+  }
 }

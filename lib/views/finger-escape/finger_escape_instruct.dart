@@ -1,12 +1,12 @@
 
-import 'package:cyberlife/views/grip-release-test/grip_release_video_instructions.dart';
+import 'package:cyberlife/views/finger-escape/finger_escape_video_instructions.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 
-class GripReleaseInstructions extends StatelessWidget {
-  final String title = "Grip Release Test";
+class FingerEscapeInstructions extends StatelessWidget {
+  final String title = "Finger Escape Test";
 
-  const GripReleaseInstructions({super.key});
+  const FingerEscapeInstructions({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class GripReleaseInstructions extends StatelessWidget {
               ),
               const SizedBox(height: 48),
               Text(
-                'Grip Release Test',
+                title,
                 style: theme.textTheme.displayMedium,
               ),
               const SizedBox(height: 16),
@@ -63,7 +63,7 @@ class GripReleaseInstructions extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const GripReleaseVideoInstructions(),
+                          builder: (context) => const FingerEscapeVideoInstructions(),
                           ));
                 },
               ),

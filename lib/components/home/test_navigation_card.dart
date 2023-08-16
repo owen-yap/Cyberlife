@@ -1,3 +1,4 @@
+import 'package:cyberlife/theme.dart';
 import 'package:flutter/material.dart';
 
 class TestNavigationCard extends StatelessWidget {
@@ -5,13 +6,15 @@ class TestNavigationCard extends StatelessWidget {
   final String testName;
   final String testTime;
   final void Function() onTap;
+  bool completed;
 
-  const TestNavigationCard({
+  TestNavigationCard({
     super.key,
     required this.testIconFilePath,
     required this.testName,
     required this.testTime,
     required this.onTap,
+    required this.completed,
   });
 
   @override
@@ -27,7 +30,9 @@ class TestNavigationCard extends StatelessWidget {
             height: screenWidth * 0.45,
             width: screenWidth * 0.4,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: completed
+                  ? AppTheme.lightGreen.withOpacity(0.3)
+                  : Colors.white,
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
@@ -48,7 +53,6 @@ class TestNavigationCard extends StatelessWidget {
                       width: 70,
                       height: 70,
                       decoration: BoxDecoration(
-                          color: Colors.white,
                           borderRadius:
                               const BorderRadius.all(Radius.circular(50.0)),
                           border: Border.all(
@@ -60,7 +64,6 @@ class TestNavigationCard extends StatelessWidget {
                           width: 60,
                           height: 60,
                           decoration: BoxDecoration(
-                            color: Colors.white,
                             image: DecorationImage(
                               image: AssetImage(testIconFilePath),
                               fit: BoxFit.scaleDown,
@@ -76,9 +79,9 @@ class TestNavigationCard extends StatelessWidget {
                       children: [
                         Text(
                           testTime,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 12,
-                              color: Colors.green,
+                              color: AppTheme.green,
                               fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 4),
@@ -91,6 +94,7 @@ class TestNavigationCard extends StatelessWidget {
                     )
                   ],
                 ),
+                Expanded(child: Container()),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -103,22 +107,26 @@ class TestNavigationCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                Expanded(
-                    child: Container(
-                  color: Colors.white,
-                )),
+                Expanded(child: Container()),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Start Test',
+                    Text(
+                      completed ? 'Redo Test?' : 'Start Test',
                       style: TextStyle(
-                        color: Colors.green,
+                        color: completed
+                            ? AppTheme.red.withOpacity(0.75)
+                            : AppTheme.green,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Image.asset('assets/images/png/nextArrowIcon.png',
-                        height: 14, width: 14),
+                    completed
+                        ? const SizedBox.shrink()
+                        : Icon(
+                            Icons.chevron_right,
+                            color: AppTheme.green,
+                          ),
                   ],
                 ),
               ],

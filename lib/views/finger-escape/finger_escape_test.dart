@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:async';
 
+import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/theme.dart';
-import 'package:cyberlife/views/grip-release-test/grip_release_results.dart';
+import 'package:cyberlife/views/finger-escape/finger_escape_results.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/views/camera_view.dart';
 
@@ -11,32 +12,33 @@ import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utils/hand_gesture_recognition.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 
-class GripReleaseTest extends StatefulWidget {
+class FingerEscapeTest extends StatefulWidget {
   final String title = "Grip Release Test";
 
   final bool showDebugImage = false;
   final bool showLandmarkPoints = false;
 
-  const GripReleaseTest({Key? key}) : super(key: key);
+  const FingerEscapeTest({Key? key}) : super(key: key);
 
   @override
-  _GripReleaseTestState createState() => _GripReleaseTestState();
+  _FingerEscapeTestState createState() => _FingerEscapeTestState();
 }
 
 enum HandState { UNSET, OPEN, CLOSE }
 
-class _GripReleaseTestState extends State<GripReleaseTest> {
+class _FingerEscapeTestState extends State<FingerEscapeTest> {
   HandLandmarks? handLandmarks;
   Image? image;
   Gestures? gesture;
 
-  int test_total_time = 5;
+  int testTotalTime = 5;
 
   int timeLeft = 0;
-  int numOpenClose = 0;
   bool hasStarted = false;
   bool testComplete = false;
-  HandState previousHandState = HandState.UNSET;
+  double supinationDegree = 0;
+  double maxSupinationDegree = 0;
+  AngleList supinationAngleList = AngleList();
   Timer? timer;
 
   @override
@@ -99,8 +101,8 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => GripReleaseResults(
-                                  fistsMade: numOpenClose,
+                                builder: (context) => FingerEscapeResults(
+                                  supinationAngleList: supinationAngleList,
                                 ),
                               ));
                         },
@@ -126,19 +128,11 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
           Text("$timeLeft", style: AppTheme.displayMedium),
         ],
       ),
-      Column(
-        children: [
-          const Text("Number of", style: AppTheme.displaySmall),
-          const Text("Fists Made", style: AppTheme.displaySmall),
-          const SizedBox(height: 16),
-          Text("$numOpenClose", style: AppTheme.displayMedium),
-        ],
-      ),
     ]);
   }
 
   void startTest() {
-    // Defensive call to end test, in case timr is still running
+    // Defensive call to end test, in case timer is still running
     endTest();
 
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -157,8 +151,10 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     hasStarted = true;
     testComplete = false;
     setState(() {
-      numOpenClose = 0;
-      timeLeft = test_total_time;
+      supinationDegree = 0;
+      maxSupinationDegree = 0;
+      supinationAngleList = AngleList();
+      timeLeft = testTotalTime;
     });
   }
 
@@ -186,27 +182,31 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
           landmarkList: points,
           scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
       if (handLandmarks!.hasPoints()) {
-        updateGesture(handLandmarks!.getRecognition());
+        gesture = handLandmarks!.getRecognition();
+        calculateSupination();
       } else {
-        updateGesture(null);
+        gesture = null;
       }
+      supinationAngleList.add(supinationDegree);
     });
   }
 
-  void updateGesture(Gestures? newGesture) {
-    gesture = newGesture;
-    if (!hasStarted) {
+  void calculateSupination() {
+    if (!isHandReady() || !hasStarted) {
       return;
     }
 
-    if (gesture == Gestures.FIST) {
-      if (previousHandState == HandState.OPEN) {
-        numOpenClose++;
-      }
-      previousHandState = HandState.CLOSE;
-    } else if (gesture == Gestures.FIVE || gesture == Gestures.FOUR) {
-      previousHandState = HandState.OPEN;
+    supinationDegree = handLandmarks!.getPinkySupination();
+    maxSupinationDegree = max(supinationDegree, maxSupinationDegree);
+  }
+
+  bool isHandReady() {
+    if (gesture != Gestures.FOUR && gesture != Gestures.FIVE) {
+      return false;
+    } else if (!handLandmarks!.areFingersClosed()) {
+      return false;
     }
+    return true;
   }
 
   Widget drawLandmark() {
@@ -234,15 +234,15 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   }
 
   Widget displayHandDetectionStatus() {
-    Icon isHandDetected;
+    Icon isHandDetectedIcon;
     if (gesture == null) {
-      isHandDetected = const Icon(
+      isHandDetectedIcon = const Icon(
         Icons.clear,
         size: 50.0, // Adjust the size as needed
         color: AppTheme.lightRed, // Adjust the color as needed
       );
     } else {
-      isHandDetected = const Icon(
+      isHandDetectedIcon = const Icon(
         Icons.check,
         size: 50.0, // Adjust the size as needed
         color: AppTheme.lightGreen, // Adjust the color as needed
@@ -253,7 +253,32 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       children: [
         const Text("Hand detected?"),
         const SizedBox(width: 32),
-        isHandDetected
+        isHandDetectedIcon
+      ],
+    );
+  }
+
+  Widget displayFingersClosedStatus() {
+    Icon areFingersClosedIcon;
+    if (!isHandReady()) {
+      areFingersClosedIcon = const Icon(
+        Icons.clear,
+        size: 50.0, // Adjust the size as needed
+        color: AppTheme.lightRed, // Adjust the color as needed
+      );
+    } else {
+      areFingersClosedIcon = const Icon(
+        Icons.check,
+        size: 50.0, // Adjust the size as needed
+        color: AppTheme.lightGreen, // Adjust the color as needed
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Fingers closed?"),
+        const SizedBox(width: 32),
+        areFingersClosedIcon
       ],
     );
   }

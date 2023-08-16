@@ -2,9 +2,7 @@ import 'dart:isolate';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as imageLib;
 import 'package:cyberlife/tflite/hand_detection_model.dart';
-import 'package:cyberlife/utils/image_utils.dart';
 import 'package:cyberlife/utils/isolate_utils.dart';
 
 class CameraView extends StatefulWidget {

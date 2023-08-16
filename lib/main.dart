@@ -4,7 +4,6 @@ import 'package:cyberlife/services/auth/auth_service.dart';
 import 'package:cyberlife/views/auth/login_view.dart';
 import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
-import 'package:cyberlife/views/joint-motor-function/function_instructions.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_main.dart';
 import 'package:cyberlife/views/home/new_result_view.dart';
 import 'package:flutter/material.dart';

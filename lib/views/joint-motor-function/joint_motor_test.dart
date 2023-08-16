@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cyberlife/components/stopwatch_circle.dart';
-import 'package:cyberlife/constants/routes.dart';
 import 'package:cyberlife/constants/strings.dart';
 import 'package:cyberlife/enums/joint_motor_function/joints.dart';
 import 'package:cyberlife/models/app_state.dart';
@@ -113,7 +112,8 @@ class _JointMotorFunctionTestState extends State<JointMotorFunctionTest> {
                           minimumSize: const MaterialStatePropertyAll(Size(
                               150, 150)), // Set the desired width and height
                           backgroundColor: stopwatchRunning
-                              ? const MaterialStatePropertyAll(AppTheme.red)
+                              ? const MaterialStatePropertyAll(
+                                  AppTheme.lightRed)
                               : const MaterialStatePropertyAll(
                                   AppTheme.lightGreen),
                           padding: MaterialStateProperty.all(

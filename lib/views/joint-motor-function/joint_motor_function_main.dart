@@ -1,12 +1,6 @@
 import 'package:cyberlife/components/joint-motor-function/motor_function_test_button.dart';
-import 'package:cyberlife/constants/strings.dart';
 import 'package:cyberlife/enums/joint_motor_function/joints.dart';
-import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/models/app_state.dart';
-import 'package:cyberlife/models/joint_motor_function_user_state.dart';
-import 'package:cyberlife/views/joint-motor-function/function_instructions.dart';
-import 'package:cyberlife/views/joint-motor-function/joint_motor_function_results.dart';
-import 'package:cyberlife/views/joint-motor-function/joint_motor_test.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +15,6 @@ class JointMotorFunctionMain extends StatefulWidget {
 }
 
 class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
-
   @override
   void initState() {
     super.initState();
@@ -56,19 +49,22 @@ class _JointMotorFunctionMainState extends State<JointMotorFunctionMain> {
                 const SizedBox(height: 48),
                 MotorFunctionTestButton(
                   joint: Joints.shoulder,
-                  jointMotorFunctionTestState: notifier.jointMotorFunctionTestState,
+                  jointMotorFunctionTestState:
+                      notifier.jointMotorFunctionUserState,
                   defaultVideoPath: defaultVideoPath,
                 ),
                 const SizedBox(height: 24),
                 MotorFunctionTestButton(
                   joint: Joints.elbow,
-                  jointMotorFunctionTestState: notifier.jointMotorFunctionTestState,
+                  jointMotorFunctionTestState:
+                      notifier.jointMotorFunctionUserState,
                   defaultVideoPath: defaultVideoPath,
                 ),
                 const SizedBox(height: 24),
                 MotorFunctionTestButton(
                   joint: Joints.knee,
-                  jointMotorFunctionTestState: notifier.jointMotorFunctionTestState,
+                  jointMotorFunctionTestState:
+                      notifier.jointMotorFunctionUserState,
                   defaultVideoPath: defaultVideoPath,
                 ),
                 const Expanded(

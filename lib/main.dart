@@ -1,5 +1,10 @@
 import 'package:cyberlife/constants/routes.dart';
+import 'package:cyberlife/enums/joint_motor_function/joints.dart';
+import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/models/app_state.dart';
+import 'package:cyberlife/models/finger_escape_user_state.dart';
+import 'package:cyberlife/models/grip_release_user_state.dart';
+import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
 import 'package:cyberlife/views/auth/login_view.dart';
 import 'package:cyberlife/views/auth/register_view.dart';
@@ -13,14 +18,24 @@ import 'theme.dart';
 import 'package:cyberlife/views/home/home_view.dart';
 import 'dart:developer' as devtools show log;
 
+Future<void> initializeHive() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(AppStateNotifierAdapter());
+  Hive.registerAdapter(JointMotorFunctionUserStateAdapter());
+  Hive.registerAdapter(GripReleaseUserStateAdapter());
+  Hive.registerAdapter(FingerEscapeUserStateAdapter());
+  Hive.registerAdapter(AngleListAdapter());
+  Hive.registerAdapter(JointsAdapter());
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
+
+  await initializeHive();
 
   Box<AppStateNotifier> storage = await Hive.openBox('storage');
-  AppStateNotifier appStateNotifier =
-      storage.get('userState', defaultValue: AppStateNotifier())!;
-  storage.close();
+  AppStateNotifier appStateNotifier = storage.get('userState', defaultValue: AppStateNotifier.defaultAppStateNotifier())!;
+  print(appStateNotifier);
 
   runApp(ChangeNotifierProvider(
       create: (context) => appStateNotifier,
@@ -40,6 +55,8 @@ Future<void> main() async {
           },
         );
       }));
+
+  storage.close();
 }
 
 class HomePage extends StatelessWidget {

@@ -6,6 +6,7 @@ import 'package:cyberlife/models/finger_escape_user_state.dart';
 import 'package:cyberlife/models/grip_release_user_state.dart';
 import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
+import 'package:cyberlife/utils/hive_utils.dart';
 import 'package:cyberlife/views/auth/login_view.dart';
 import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
@@ -34,7 +35,9 @@ Future<void> main() async {
   await initializeHive();
 
   Box<AppStateNotifier> storage = await Hive.openBox('storage');
-  AppStateNotifier appStateNotifier = storage.get('userState', defaultValue: AppStateNotifier.defaultAppStateNotifier())!;
+  String userStateKey = HiveUtils.getTodayUserStateKey();
+  AppStateNotifier appStateNotifier = storage.get(userStateKey,
+      defaultValue: AppStateNotifier.defaultAppStateNotifier())!;
 
   runApp(ChangeNotifierProvider(
       create: (context) => appStateNotifier,

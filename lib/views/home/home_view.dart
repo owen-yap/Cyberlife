@@ -6,6 +6,7 @@ import 'package:cyberlife/enums/menu_action.dart';
 import 'package:cyberlife/models/app_state.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
 import 'package:cyberlife/services/cloud/firebase_cloud_storage.dart';
+import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/views/finger-escape/finger_escape_instruct.dart';
 import 'package:cyberlife/views/grip-release-test/grip_release_instruct.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_instruct.dart';
@@ -83,6 +84,7 @@ class _HomeViewState extends State<HomeView> {
                     padding: const EdgeInsets.all(30),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Text('Please complete all of the tests below',
                             style: TextStyle(
@@ -159,6 +161,22 @@ class _HomeViewState extends State<HomeView> {
                             ),
                           ],
                         ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              notifier.resetAll();
+                            },
+                            style: Theme.of(context)
+                                .elevatedButtonTheme
+                                .style!
+                                .copyWith(
+                                    // Set the desired width and height
+                                    backgroundColor:
+                                        const MaterialStatePropertyAll(
+                                            AppTheme.lightRed)),
+                            child: const Text("Reset Tests"))
                       ],
                     ),
                   );

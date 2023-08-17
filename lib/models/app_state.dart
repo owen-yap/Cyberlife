@@ -3,6 +3,7 @@ import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/models/finger_escape_user_state.dart';
 import 'package:cyberlife/models/grip_release_user_state.dart';
 import 'package:cyberlife/models/joint_motor_function_user_state.dart';
+import 'package:cyberlife/utils/hive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -24,9 +25,9 @@ class AppStateNotifier extends ChangeNotifier {
   FingerEscapeUserState _fingerEscapeUserState = FingerEscapeUserState();
   FingerEscapeUserState get fingerEscapeUserState => _fingerEscapeUserState;
 
-  static defaultAppStateNotifier() {
-    AppStateNotifier(JointMotorFunctionUserState(), GripReleaseUserState(),
-        FingerEscapeUserState());
+  static AppStateNotifier defaultAppStateNotifier() {
+    return AppStateNotifier(JointMotorFunctionUserState(),
+        GripReleaseUserState(), FingerEscapeUserState());
   }
 
   AppStateNotifier(
@@ -71,10 +72,18 @@ class AppStateNotifier extends ChangeNotifier {
     post();
   }
 
+  void resetAll() {
+    _jointMotorFunctionUserState.resetAll();
+    _gripReleaseUserState.reset();
+    _fingerEscapeUserState.reset();
+    post();
+  }
+
   void post() async {
     // Save data first
     Box<AppStateNotifier> storage = await Hive.openBox('storage');
-    await storage.put('userState', this);
+    String userStateKey = HiveUtils.getTodayUserStateKey();
+    await storage.put(userStateKey, this);
     super.notifyListeners();
   }
 

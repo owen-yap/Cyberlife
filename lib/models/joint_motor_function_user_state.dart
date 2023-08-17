@@ -6,7 +6,6 @@ part 'joint_motor_function_user_state.g.dart';
 
 @HiveType(typeId: 1)
 class JointMotorFunctionUserState {
-
   @HiveField(0)
   Map<Joints, Map<String, dynamic>> stateMap = {
     for (Joints joint in Joints.values)
@@ -29,6 +28,12 @@ class JointMotorFunctionUserState {
 
   void resetJointTest(Joints joint) {
     markJointTest(joint, false, AngleList());
+  }
+
+  void resetAll() {
+    for (Joints joint in stateMap.keys) {
+      resetJointTest(joint);
+    }
   }
 
   bool isComplete() {

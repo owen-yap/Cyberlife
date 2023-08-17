@@ -7,6 +7,7 @@ import 'package:cyberlife/views/auth/verify_email_view.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_main.dart';
 import 'package:cyberlife/views/home/new_result_view.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'theme.dart';
 import 'package:cyberlife/views/home/home_view.dart';
@@ -14,9 +15,15 @@ import 'dart:developer' as devtools show log;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
+  Box<AppStateNotifier> storage = await Hive.openBox('storage');
+  AppStateNotifier appStateNotifier =
+      storage.get('userState', defaultValue: AppStateNotifier())!;
+  storage.close();
 
   runApp(ChangeNotifierProvider(
-      create: (context) => AppStateNotifier(),
+      create: (context) => appStateNotifier,
       builder: (context, provider) {
         return MaterialApp(
           title: 'Cyberlife',

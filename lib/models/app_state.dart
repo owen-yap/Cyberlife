@@ -4,6 +4,7 @@ import 'package:cyberlife/models/finger_escape_user_state.dart';
 import 'package:cyberlife/models/grip_release_user_state.dart';
 import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class AppStateNotifier extends ChangeNotifier {
   final JointMotorFunctionUserState _jointMotorFunctionUserState =
@@ -15,6 +16,7 @@ class AppStateNotifier extends ChangeNotifier {
       _jointMotorFunctionUserState;
   GripReleaseUserState get gripReleaseUserState => _gripReleaseUserState;
   FingerEscapeUserState get fingerEscapeUserState => _fingerEscapeUserState;
+  
 
   // JOINT MOTOR FUNCTION
   void markJointTest(Joints joint, bool completed, AngleList aList) {
@@ -47,6 +49,15 @@ class AppStateNotifier extends ChangeNotifier {
   void resetFingerEscape() {
     _fingerEscapeUserState.reset();
     notifyListeners();
+  }
+
+  @override
+  void notifyListeners() async {
+    // Save data first
+    Box<AppStateNotifier> storage = await Hive.openBox('storage');
+    await storage.put('userState', this);
+    storage.close();
+    super.notifyListeners();
   }
 
   @override

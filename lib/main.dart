@@ -35,7 +35,6 @@ Future<void> main() async {
 
   Box<AppStateNotifier> storage = await Hive.openBox('storage');
   AppStateNotifier appStateNotifier = storage.get('userState', defaultValue: AppStateNotifier.defaultAppStateNotifier())!;
-  print(appStateNotifier);
 
   runApp(ChangeNotifierProvider(
       create: (context) => appStateNotifier,

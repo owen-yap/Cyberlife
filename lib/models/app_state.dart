@@ -74,12 +74,7 @@ class AppStateNotifier extends ChangeNotifier {
   void post() async {
     // Save data first
     Box<AppStateNotifier> storage = await Hive.openBox('storage');
-    print(this);
     await storage.put('userState', this);
-
-    // AppStateNotifier appStateNotifier = storage.get('userState')!;
-    // print(appStateNotifier);
-
     super.notifyListeners();
   }
 

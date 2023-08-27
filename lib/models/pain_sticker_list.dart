@@ -10,29 +10,26 @@ class PainStickerList {
 
   List<Widget> psList = <Widget>[];
 
-  Widget silhouette = Container(
-    margin: const EdgeInsets.only(top: 40.0),
-    child: Image.asset("assets/images/png/silhouette.png"),
+  Widget frontMap = Padding(
+    padding: const EdgeInsets.only(top: 24.0),
+    child: Container(
+      alignment: Alignment.topCenter,
+      child: Image.asset(
+        "assets/images/png/dermatome_anterior.png",
+        width: 250,
+      ),
+    ),
   );
 
-  Widget frontMap = Container(
-    margin: const EdgeInsets.only(top: 40.0),
-    child: Image.asset("assets/images/png/bodyFront.png"),
-  );
-
-  Widget backMap = Container(
-    margin: const EdgeInsets.only(top: 40.0),
-    child: Image.asset("assets/images/png/bodyBack.png"),
-  );
-
-  Widget rightMap = Container(
-    margin: const EdgeInsets.only(top: 40.0),
-    child: Image.asset("assets/images/png/bodyRight.png"),
-  );
-
-  Widget leftMap = Container(
-    margin: const EdgeInsets.only(top: 40.0),
-    child: Image.asset("assets/images/png/bodyLeft.png"),
+  Widget backMap = Padding(
+    padding: const EdgeInsets.only(top: 24.0),
+    child: Container(
+      alignment: Alignment.topCenter,
+      child: Image.asset(
+        "assets/images/png/dermatome_posterior.png",
+        width: 250,
+      ),
+    ),
   );
 
   Widget trash = Positioned(
@@ -49,12 +46,6 @@ class PainStickerList {
         break;
       case 'Back':
         widgetList.insert(0, backMap);
-        break;
-      case 'Right':
-        widgetList.insert(0, rightMap);
-        break;
-      case 'Left':
-        widgetList.insert(0, leftMap);
         break;
       default:
         return widgetList;

@@ -2,7 +2,6 @@
 import 'dart:typed_data';
 
 import 'package:cyberlife/widgets/appbar.dart';
-import 'package:cyberlife/widgets/colored_tabbar.dart';
 import 'package:cyberlife/widgets/pain_submap.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/providers/pain_sticker_notification.dart';
@@ -13,7 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 
 class PainMap extends StatefulWidget {
-  PainMap({Key? key}) : super(key: key);
+  const PainMap({super.key});
 
   final String title = "Pain Map";
 
@@ -28,23 +27,27 @@ class _PainMapState extends State<PainMap> {
   List<PainStickerList> psLists = [
     PainStickerList(),
     PainStickerList(),
-    PainStickerList(),
-    PainStickerList()
   ];
+
   var currTabIndex = 0;
 
-  static const tabBar = TabBar(
-    labelColor: Colors.black,
-    unselectedLabelColor: Colors.white,
-    tabs: [
+  static var tabBar = TabBar(
+    // give the indicator a decoration (color and border radius)
+    indicator: BoxDecoration(
+      borderRadius: BorderRadius.circular(
+        25.0,
+      ),
+      color: Colors.green,
+    ),
+    labelColor: Colors.white,
+    unselectedLabelColor: Colors.black,
+    tabs: const [
       Tab(text: "Front"),
       Tab(text: "Back"),
-      Tab(text: "Side (L)"),
-      Tab(text: "Side (R)"),
     ],
   );
 
-  late List<Widget> stickerWidgets = Status.values.map((status) {
+  late List<Widget> menuItems = Status.values.map((status) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -63,26 +66,41 @@ class _PainMapState extends State<PainMap> {
     );
   }).toList();
 
-  late Positioned stickerWidgetsPositioned = Positioned(
-      left: 0,
-      top: 40,
-      child: Column(
-        children: stickerWidgets,
-      ));
-
   late Positioned screenshotButton = Positioned(
-      right: 5,
-      bottom: 10,
-      child: IconButton(
-        icon: const Icon(Icons.download_rounded),
-        iconSize: 48,
-        tooltip: 'Save to gallery',
-        onPressed: () async {
-          final image = await screenshotController.capture();
-          if (image == null) return;
-          await saveImage(image);
-        },
-      ));
+    right: 0,
+    bottom: 40,
+    child: IconButton(
+      icon: const Icon(Icons.download_rounded),
+      iconSize: 48,
+      tooltip: 'Save to gallery',
+      onPressed: () async {
+        final image = await screenshotController.capture();
+        if (image == null) return;
+        await saveImage(image);
+      },
+    ),
+  );
+
+  late Padding menu = Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Align(
+      alignment: Alignment.bottomCenter,
+      child: Container(
+        height: 80,
+        width: 300,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(
+            25.0,
+          ),
+          color: Colors.white,
+        ),
+        child: ListView(scrollDirection: Axis.horizontal, children: menuItems),
+      ),
+    ),
+  );
+
+  late Positioned stickerWidgetsPositioned =
+      Positioned(left: 0, bottom: 40, child: Row(children: menuItems));
 
   void _addSticker(Status item, PainStickerList psList) {
     setState(() {
@@ -122,42 +140,56 @@ class _PainMapState extends State<PainMap> {
                       return true;
                     },
                     child: DefaultTabController(
-                        length: 4,
+                        length: 2,
                         initialIndex: 0,
                         child: Builder(builder: (BuildContext context) {
                           final TabController controller =
-                              DefaultTabController.of(context)!;
+                              DefaultTabController.of(context);
+
                           controller.addListener(() {
                             if (!controller.indexIsChanging) {
                               currTabIndex = controller.index;
                             }
                           });
-                          return Scaffold(
-                            appBar: const ColoredTabBar(tb: tabBar),
-                            body: TabBarView(children: [
-                              PainSubmap(
-                                  label: 'Front',
-                                  psList: psLists[0],
-                                  screenshotController: screenshotController),
-                              PainSubmap(
-                                  label: 'Back',
-                                  psList: psLists[1],
-                                  screenshotController: screenshotController),
-                              PainSubmap(
-                                  label: 'Left',
-                                  psList: psLists[2],
-                                  screenshotController: screenshotController),
-                              PainSubmap(
-                                  label: 'Right',
-                                  psList: psLists[3],
-                                  screenshotController: screenshotController)
-                            ]),
-                          );
+
+                          return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Container(
+                                      height: 45,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(
+                                          25.0,
+                                        ),
+                                      ),
+                                      child: tabBar),
+                                  Expanded(
+                                    child: TabBarView(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      children: [
+                                        PainSubmap(
+                                            label: 'Front',
+                                            psList: psLists[0],
+                                            screenshotController:
+                                                screenshotController),
+                                        PainSubmap(
+                                            label: 'Back',
+                                            psList: psLists[1],
+                                            screenshotController:
+                                                screenshotController),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ));
                         })),
                   ),
                 )
               ]),
-          stickerWidgetsPositioned,
+          menu,
           screenshotButton
         ])));
   }

@@ -6,9 +6,9 @@ class TestNavigationCard extends StatelessWidget {
   final String testName;
   final String testTime;
   final void Function() onTap;
-  bool completed;
+  final bool completed;
 
-  TestNavigationCard({
+  const TestNavigationCard({
     super.key,
     required this.testIconFilePath,
     required this.testName,

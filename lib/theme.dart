@@ -33,6 +33,7 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     primarySwatch: Colors.blue,
     fontFamily: 'Roboto',
+    scaffoldBackgroundColor: const Color(0xFFf8f9ff),
     textTheme: TextTheme(
         displaySmall: displaySmall,
         displayMedium: displayMedium,

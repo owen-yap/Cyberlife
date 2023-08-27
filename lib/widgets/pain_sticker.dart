@@ -4,15 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:cyberlife/providers/pain_sticker_notification.dart';
 import 'dart:ui';
 
-enum Status {
-  pain,
-  numb,
-  pins,
-  misc
-}
+enum Status { pain, numb, pins, misc }
 
 class PainSticker extends StatelessWidget {
-  const PainSticker({Key? key, required this.degree, required this.x , required this.y, this.scale = 5.0, this.draggable = true}) : super(key: key);
+  const PainSticker(
+      {Key? key,
+      required this.degree,
+      required this.x,
+      required this.y,
+      this.scale = 5.0,
+      this.draggable = true})
+      : super(key: key);
 
   final Status degree;
   final double scale;
@@ -22,10 +24,15 @@ class PainSticker extends StatelessWidget {
 
   String getAsset() {
     String base = "assets/images/png/";
-    if (degree == Status.pain) { base += "painSticker.png"; }
-    else if (degree == Status.numb) { base += "numbSticker.png"; }
-    else if (degree == Status.pins) { base += "pinsSticker.png"; }
-    else if (degree == Status.misc) { base += "miscSticker.png"; }
+    if (degree == Status.pain) {
+      base += "cross.png";
+    } else if (degree == Status.numb) {
+      base += "circle.png";
+    } else if (degree == Status.pins) {
+      base += "triangle.png";
+    } else if (degree == Status.misc) {
+      base += "square.png";
+    }
 
     return base;
   }
@@ -50,20 +57,29 @@ class PainSticker extends StatelessWidget {
           ),
           childWhenDragging: Container(),
           onDragEnd: (dragDetails) {
-              double _x = dragDetails.offset.dx;
-              double _y = dragDetails.offset.dy - appBarHeight - tabBarHeight - MediaQueryData.fromWindow(window).padding.top;
-              double width = MediaQuery.of(context).size.width;
-              
-              if (_y < 0) { _y = 0; }
-              else if (_y > 480) { _y = 480; }
+            double x = dragDetails.offset.dx;
+            double y = dragDetails.offset.dy -
+                appBarHeight -
+                tabBarHeight -
+                MediaQueryData.fromWindow(window).padding.top;
+            double width = MediaQuery.of(context).size.width;
 
-              PainSticker newPS = PainSticker(degree: degree, scale: scale, draggable: true, x: _x, y: _y);
+            if (y < 0) {
+              y = 0;
+            } else if (y > 480) {
+              y = 480;
+            }
 
-              if (_x > width - 60 && _y < 60) {
-                PainStickerNotification(newPS: newPS, oldPS: this, delete: true).dispatch(context);
-              } else {
-                PainStickerNotification(newPS: newPS, oldPS: this).dispatch(context);
-              }
+            PainSticker newPS = PainSticker(
+                degree: degree, scale: scale, draggable: true, x: x, y: y);
+
+            if (x > width - 60 && y < 60) {
+              PainStickerNotification(newPS: newPS, oldPS: this, delete: true)
+                  .dispatch(context);
+            } else {
+              PainStickerNotification(newPS: newPS, oldPS: this)
+                  .dispatch(context);
+            }
           },
           child: Center(
             child: Image.asset(getAsset(), scale: scale),
@@ -77,4 +93,3 @@ class PainSticker extends StatelessWidget {
     }
   }
 }
-

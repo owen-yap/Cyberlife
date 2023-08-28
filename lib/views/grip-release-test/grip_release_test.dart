@@ -39,6 +39,8 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   HandState previousHandState = HandState.UNSET;
   Timer? timer;
 
+  final GlobalKey _stackKey = GlobalKey(debugLabel: "grip_release_camera_view_stack");
+
   @override
   Widget build(BuildContext context) {
     CommonAppBar appBar = CommonAppBar(title: widget.title);
@@ -57,17 +59,15 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     // Retrieve the width and height of the Stack using the key
-                    final stackWidth = constraints.maxWidth;
-                    final stackHeight = constraints.maxHeight;
-
                     return Stack(
+                      key: _stackKey,
                       children: <Widget>[
                         CameraView(
                           pointsCallback: pointsCallback,
                           imageCallback: imageCallback,
                         ),
-                        drawDebugPicture(stackWidth, stackHeight), // debug for printing image
-                        drawLandmark(stackWidth, stackHeight),
+                        drawDebugPicture(), // debug for printing image
+                        drawLandmark(),
                       ],
                     );
                   },
@@ -218,20 +218,30 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     }
   }
 
-  Widget drawLandmark(double width, double height) {
+  Widget drawLandmark() {
     if (!widget.showLandmarkPoints || handLandmarks == null) {
       return Container();
     }
-    return handLandmarks!.build(width, height);
+
+    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
+    return handLandmarks!.build(stackWidth, stackHeight);
   }
 
-  Widget drawDebugPicture(double width, double height) {
+  Widget drawDebugPicture() {
     if (!widget.showDebugImage || image == null) {
       return Container();
     }
+
+    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
     return Container(
-      width: width,
-      height: height,
+      width: stackWidth,
+      height: stackHeight,
       child: image!,
     );
   }

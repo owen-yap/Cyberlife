@@ -5,14 +5,14 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utils/isolate_utils.dart';
-import 'package:gallery_saver/gallery_saver.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:gallery_saver/gallery_saver.dart';
+// import 'package:image_picker/image_picker.dart';
 
-import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as img;
-import 'dart:typed_data';
-import 'package:camera/camera.dart';
-import 'package:path/path.dart' as p;
+// import 'package:path_provider/path_provider.dart';
+// import 'package:image/image.dart' as img;
+// import 'dart:typed_data';
+// import 'package:camera/camera.dart';
+// import 'package:path/path.dart' as p;
 
 
 class CameraView extends StatefulWidget {
@@ -85,21 +85,21 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     });
   }
 
-  img.Image convertCameraImage(CameraImage cameraImage) {
-  // Convert CameraImage to Image using the image package
-  // You might need to handle different formats (YUV, BGRA, etc.)
-  // This example assumes the image is in the BGRA8888 format
-  ImageFormat format = cameraImage.format;
+//   img.Image convertCameraImage(CameraImage cameraImage) {
+//   // Convert CameraImage to Image using the image package
+//   // You might need to handle different formats (YUV, BGRA, etc.)
+//   // This example assumes the image is in the BGRA8888 format
+//   ImageFormat format = cameraImage.format;
 
-  print('Image format: $format');
-  final img.Image result_img = img.Image.fromBytes(
-    width: cameraImage.width,
-    height: cameraImage.height,
-    bytes: cameraImage.planes[0].bytes.buffer,
-    format: img.Format.float64
-  );
-  return result_img;
-}
+//   print('Image format: $format');
+//   final img.Image result_img = img.Image.fromBytes(
+//     width: cameraImage.width,
+//     height: cameraImage.height,
+//     bytes: cameraImage.planes[0].bytes.buffer,
+//     format: img.Format.float64
+//   );
+//   return result_img;
+// }
 
 // Future<String> saveImageLocally(img.Image image) async {
 //   final Directory appDirectory = await getApplicationDocumentsDirectory();

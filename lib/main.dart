@@ -1,22 +1,46 @@
 import 'package:cyberlife/constants/routes.dart';
+import 'package:cyberlife/enums/joint_motor_function/joints.dart';
+import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/models/app_state.dart';
+import 'package:cyberlife/models/finger_escape_user_state.dart';
+import 'package:cyberlife/models/grip_release_user_state.dart';
+import 'package:cyberlife/models/joint_motor_function_user_state.dart';
 import 'package:cyberlife/services/auth/auth_service.dart';
+import 'package:cyberlife/utils/hive_utils.dart';
 import 'package:cyberlife/views/auth/login_view.dart';
 import 'package:cyberlife/views/auth/register_view.dart';
 import 'package:cyberlife/views/auth/verify_email_view.dart';
 import 'package:cyberlife/views/joint-motor-function/joint_motor_function_main.dart';
 import 'package:cyberlife/views/home/new_result_view.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'theme.dart';
 import 'package:cyberlife/views/home/home_view.dart';
 import 'dart:developer' as devtools show log;
 
+Future<void> initializeHive() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(AppStateNotifierAdapter());
+  Hive.registerAdapter(JointMotorFunctionUserStateAdapter());
+  Hive.registerAdapter(GripReleaseUserStateAdapter());
+  Hive.registerAdapter(FingerEscapeUserStateAdapter());
+  Hive.registerAdapter(AngleListAdapter());
+  Hive.registerAdapter(JointsAdapter());
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await initializeHive();
+
+  Box<AppStateNotifier> storage = await Hive.openBox('storage');
+  String userStateKey = HiveUtils.getTodayUserStateKey();
+  AppStateNotifier appStateNotifier = storage.get(userStateKey,
+      defaultValue: AppStateNotifier.defaultAppStateNotifier())!;
+
   runApp(ChangeNotifierProvider(
-      create: (context) => AppStateNotifier(),
+      create: (context) => appStateNotifier,
       builder: (context, provider) {
         return MaterialApp(
           title: 'Cyberlife',
@@ -33,6 +57,8 @@ Future<void> main() async {
           },
         );
       }));
+
+  storage.close();
 }
 
 class HomePage extends StatelessWidget {

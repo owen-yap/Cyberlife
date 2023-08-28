@@ -1,7 +1,15 @@
 import 'package:cyberlife/models/angle_list.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+part 'finger_escape_user_state.g.dart';
+
+@HiveType(typeId: 3)
 class FingerEscapeUserState {
+
+  @HiveField(0)
   AngleList supinationAngleList = AngleList();
+
+  @HiveField(1)
   bool complete = false;
 
   FingerEscapeUserState();

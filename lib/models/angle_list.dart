@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cyberlife/utils/angle_series.dart';
 import 'package:cyberlife/widgets/angle_chart.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+part 'angle_list.g.dart';
+
+@HiveType(typeId: 5)
 class AngleList {
   AngleList();
+
+  @HiveField(0)
   List<double> angleList = <double>[];
+
   double minPossibleAngle = -180;
   double maxPossibleAngle = 180;
 

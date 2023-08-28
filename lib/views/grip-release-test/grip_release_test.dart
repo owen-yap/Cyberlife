@@ -14,8 +14,8 @@ import 'package:cyberlife/widgets/appbar.dart';
 class GripReleaseTest extends StatefulWidget {
   final String title = "Grip Release Test";
 
-  final bool showDebugImage = true;
-  final bool showLandmarkPoints = true;
+  final bool showDebugImage = false;
+  final bool showLandmarkPoints = false;
 
   const GripReleaseTest({Key? key}) : super(key: key);
 
@@ -30,7 +30,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   Image? image;
   Gestures? gesture;
 
-  int test_total_time = 5;
+  int test_total_time = 10;
 
   int timeLeft = 0;
   int numOpenClose = 0;
@@ -179,6 +179,9 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   }
 
   void imageCallback(Image image) {
+    if (!mounted) {
+      return;
+    }
     setState(() {
       this.image = image;
     });
@@ -189,11 +192,16 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     if (!mounted) {
       return;
     }
+
+    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
     setState(() {
       handLandmarks = HandLandmarks(
           handedness: handedness,
           landmarkList: points,
-          scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
+          scaleFactor: min(stackWidth, stackHeight) / HandDetection.IMAGE_SIZE);
       if (handLandmarks!.hasPoints()) {
         updateGesture(handLandmarks!.getRecognition());
       } else {

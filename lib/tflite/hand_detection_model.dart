@@ -110,8 +110,6 @@ class HandDetection {
 
     interpreter!.runForMultipleInputs(inputs, outputs);
 
-    // print(outputHandedness.getDoubleValue(0));
-
 
     if (enableThreshold && outputScore.getDoubleValue(0) < THRESHOLD) {
       return {};

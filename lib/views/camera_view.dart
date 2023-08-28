@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:cyberlife/utils/image_utils.dart';
@@ -8,14 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utils/isolate_utils.dart';
 import 'package:image/image.dart' as imageLib;
-// import 'package:gallery_saver/gallery_saver.dart';
-// import 'package:image_picker/image_picker.dart';
-
-// import 'package:path_provider/path_provider.dart';
-// import 'package:image/image.dart' as img;
-// import 'dart:typed_data';
-// import 'package:camera/camera.dart';
-// import 'package:path/path.dart' as p;
 
 
 

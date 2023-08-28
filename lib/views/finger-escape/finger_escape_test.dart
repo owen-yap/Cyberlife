@@ -213,7 +213,7 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
     if (!widget.showLandmarkPoints || handLandmarks == null) {
       return Container();
     }
-    return handLandmarks!.build();
+    return handLandmarks!.build(480, 480);
   }
 
   Widget drawDebugPicture() {

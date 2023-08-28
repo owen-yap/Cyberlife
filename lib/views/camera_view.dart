@@ -112,25 +112,25 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
 //   return imagePath;
 // }
 
-void saveImageLocally(img.Image image) async {
-  ImagePicker().pickImage(source: ImageSource.camera)
-        .then((File recordedImage) {
-      if (recordedImage != null && recordedImage.path != null) {
+// void saveImageLocally(img.Image image) async {
+//   ImagePicker().pickImage(source: ImageSource.camera)
+//         .then((File recordedImage) {
+//       if (recordedImage != null && recordedImage.path != null) {
 
-        GallerySaver.saveImage(recordedImage.path).then((String path) {
-          print(path);
-        });
-      }
-    });
-}
+//         GallerySaver.saveImage(recordedImage.path).then((String path) {
+//           print(path);
+//         });
+//       }
+//     });
+// }
 
   void onLatestImageAvailable(CameraImage cameraImage) async {
     if (processing || handDetector.interpreter == null || !mounted) {
       return;
     }
 
-    final img.Image image = convertCameraImage(cameraImage);
-    saveImageLocally(image);
+    // final img.Image image = convertCameraImage(cameraImage);
+    // saveImageLocally(image);
 
     setState(() {
       processing = true;
@@ -144,6 +144,8 @@ void saveImageLocally(img.Image image) async {
     bool handedness = (results.isNotEmpty) ? results["handedness"] > 0.5 : true;
     widget.pointsCallback(
         pointList, cameraImage.width, cameraImage.height, handedness);
+
+    print(results["landmarks"].length);
 
     //debug for printing image
 

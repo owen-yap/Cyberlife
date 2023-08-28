@@ -14,8 +14,8 @@ import 'package:cyberlife/widgets/appbar.dart';
 class GripReleaseTest extends StatefulWidget {
   final String title = "Grip Release Test";
 
-  final bool showDebugImage = false;
-  final bool showLandmarkPoints = false;
+  final bool showDebugImage = true;
+  final bool showLandmarkPoints = true;
 
   const GripReleaseTest({Key? key}) : super(key: key);
 
@@ -52,17 +52,26 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
-              child: Stack(
-                children: <Widget>[
-                  CameraView(
-                      pointsCallback: pointsCallback,
-                      imageCallback: imageCallback),
-                  drawDebugPicture(), // debug for printing image
-                  drawLandmark(),
-                ],
-              ),
-            ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    // Retrieve the width and height of the Stack using the key
+                    final stackWidth = constraints.maxWidth;
+                    final stackHeight = constraints.maxHeight;
+
+                    return Stack(
+                      children: <Widget>[
+                        CameraView(
+                          pointsCallback: pointsCallback,
+                          imageCallback: imageCallback,
+                        ),
+                        drawDebugPicture(stackWidth, stackHeight), // debug for printing image
+                        drawLandmark(stackWidth, stackHeight),
+                      ],
+                    );
+                  },
+                )),
             displayHandDetectionStatus(),
             const SizedBox(height: 32),
             generateStats(),
@@ -209,19 +218,20 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     }
   }
 
-  Widget drawLandmark() {
+  Widget drawLandmark(double width, double height) {
     if (!widget.showLandmarkPoints || handLandmarks == null) {
       return Container();
     }
-    return handLandmarks!.build();
+    return handLandmarks!.build(width, height);
   }
 
-  Widget drawDebugPicture() {
+  Widget drawDebugPicture(double width, double height) {
     if (!widget.showDebugImage || image == null) {
       return Container();
     }
     return Container(
-      margin: const EdgeInsets.only(top: 120.0),
+      width: width,
+      height: height,
       child: image!,
     );
   }

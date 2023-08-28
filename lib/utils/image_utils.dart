@@ -33,20 +33,9 @@ class ImageUtils {
         //     ? h
         //     : w; // Adjust x-coordinate for rotation on Android
 
-        // print((w, h));
         image = setPixelRgbSafe(image, w, h, rgbValue);
       }
     }
-
-    // int counter = 0;
-    // Uint8List data = image.data!.toUint8List();
-    // data.forEach((element) {
-    //   if (element != 0) {
-    //     counter += 1;
-    //   }
-    // });
-    // print(counter);
-    // print(data.length);
 
     if (Platform.isAndroid) {
       image = imageLib.copyRotate(image, angle: 90);
@@ -82,10 +71,9 @@ class ImageUtils {
     r = r.clamp(0, 255);
     g = g.clamp(0, 255);
     b = b.clamp(0, 255);
-    // print((r, g, b));
 
     // 32 bit number
-    // 0xFFFF<BLUE><GREEN><RED>
+    // 0xFF00<BLUE><GREEN><RED>
     int result =
         0xff000000 | ((b << 16) & 0xff0000) | ((g << 8) & 0xff00) | (r & 0xff);
 

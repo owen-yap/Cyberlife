@@ -17,8 +17,8 @@ class HandLandmarks {
     pointList = getPoints();
   }
 
-  Widget build() {
-    return HandWidget(points: pointList);
+  Widget build(double width, double height) {
+    return HandWidget(points: pointList, width: width, height: height);
   }
 
   bool hasPoints() {

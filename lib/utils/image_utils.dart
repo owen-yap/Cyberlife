@@ -29,11 +29,11 @@ class ImageUtils {
 
         final rgbValue = ImageUtils.yuv2rgb(y, u, v);
 
-        final x = Platform.isAndroid
-            ? h
-            : w; // Adjust x-coordinate for rotation on Android
+        // final x = Platform.isAndroid
+        //     ? h
+        //     : w; // Adjust x-coordinate for rotation on Android
 
-        image = setPixelRgbSafe(image, x, h, rgbValue);
+        image = setPixelRgbSafe(image, w, h, rgbValue);
       }
     }
 
@@ -47,15 +47,18 @@ class ImageUtils {
   static imageLib.Image setPixelRgbSafe(
       imageLib.Image image, int x, int y, int rgbValue) {
     if (x >= 0 && x < image.width && y >= 0 && y < image.height) {
-      image.setPixelRgb(
-          x, y, getRed(rgbValue), getGreen(rgbValue), getBlue(rgbValue));
+      int r = getRed(rgbValue);
+      int g = getGreen(rgbValue);
+      int b = getBlue(rgbValue);
+      // print((r, g, b));
+      image.setPixelRgb(x, y, r, g, b);
     }
     return image;
   }
 
-  static int getRed(int rgbValue) => (rgbValue >> 16) & 0xFF;
+  static int getBlue(int rgbValue) => (rgbValue >> 16) & 0xFF;
   static int getGreen(int rgbValue) => (rgbValue >> 8) & 0xFF;
-  static int getBlue(int rgbValue) => rgbValue & 0xFF;
+  static int getRed(int rgbValue) => rgbValue & 0xFF;
 
   /// Convert a single YUV pixel to RGB
   static int yuv2rgb(int y, int u, int v) {
@@ -69,10 +72,12 @@ class ImageUtils {
     g = g.clamp(0, 255);
     b = b.clamp(0, 255);
 
-    return 0xff000000 |
-        ((b << 16) & 0xff0000) |
-        ((g << 8) & 0xff00) |
-        (r & 0xff);
+    // 32 bit number
+    // 0xFF00<BLUE><GREEN><RED>
+    int result =
+        0xff000000 | ((b << 16) & 0xff0000) | ((g << 8) & 0xff00) | (r & 0xff);
+
+    return result;
   }
 
   static imageLib.Image squareCropMiddle(imageLib.Image image, int newSide) {

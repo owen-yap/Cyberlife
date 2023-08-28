@@ -1,9 +1,13 @@
 import 'dart:isolate';
 
 import 'package:camera/camera.dart';
+import 'package:cyberlife/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utils/isolate_utils.dart';
+import 'package:image/image.dart' as imageLib;
+
+
 
 class CameraView extends StatefulWidget {
   /// Default Constructor
@@ -80,6 +84,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       return;
     }
 
+
     setState(() {
       processing = true;
     });
@@ -95,10 +100,10 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
 
     //debug for printing image
 
-    /*imageLib.Image debugImage = ImageUtils.convertCameraImage(cameraImage);
-    //debugImage = imageLib.copyResizeCropSquare(debugImage, 224);
+    imageLib.Image debugImage = ImageUtils.convertCameraImage(cameraImage);
+    // debugImage = imageLib.copyResizeCropSquare(debugImage, size:224);
     widget.imageCallback(Image.memory(
-        imageLib.encodeJpg(debugImage) as Uint8List));*/
+        imageLib.encodeJpg(debugImage)));
 
     await Future.delayed(Duration(milliseconds: 66));
 
@@ -111,6 +116,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       processing = false;
     });
   }
+
 
   /// Runs inference in another isolate
   Future<Map<String, dynamic>> inference(IsolateData isolateData) async {

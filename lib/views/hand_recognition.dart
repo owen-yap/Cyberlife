@@ -69,7 +69,7 @@ class _HandRecognitionState extends State<HandRecognition> {
       return Container();
     }
     gesture = handLandmarks!.getRecognition();
-    return handLandmarks!.build();
+    return handLandmarks!.build(480, 480);
   }
 
   Widget drawDebugPicture() {

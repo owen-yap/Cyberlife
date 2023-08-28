@@ -30,7 +30,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   Image? image;
   Gestures? gesture;
 
-  int test_total_time = 5;
+  int test_total_time = 10;
 
   int timeLeft = 0;
   int numOpenClose = 0;
@@ -38,6 +38,8 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   bool testComplete = false;
   HandState previousHandState = HandState.UNSET;
   Timer? timer;
+
+  final GlobalKey _stackKey = GlobalKey(debugLabel: "grip_release_camera_view_stack");
 
   @override
   Widget build(BuildContext context) {
@@ -52,17 +54,24 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
-              child: Stack(
-                children: <Widget>[
-                  CameraView(
-                      pointsCallback: pointsCallback,
-                      imageCallback: imageCallback),
-                  drawDebugPicture(), // debug for printing image
-                  drawLandmark(),
-                ],
-              ),
-            ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    // Retrieve the width and height of the Stack using the key
+                    return Stack(
+                      key: _stackKey,
+                      children: <Widget>[
+                        CameraView(
+                          pointsCallback: pointsCallback,
+                          imageCallback: imageCallback,
+                        ),
+                        drawDebugPicture(), // debug for printing image
+                        drawLandmark(),
+                      ],
+                    );
+                  },
+                )),
             displayHandDetectionStatus(),
             const SizedBox(height: 32),
             generateStats(),
@@ -170,6 +179,9 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   }
 
   void imageCallback(Image image) {
+    if (!mounted) {
+      return;
+    }
     setState(() {
       this.image = image;
     });
@@ -180,11 +192,16 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     if (!mounted) {
       return;
     }
+
+    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
     setState(() {
       handLandmarks = HandLandmarks(
           handedness: handedness,
           landmarkList: points,
-          scaleFactor: min(width, height) / HandDetection.IMAGE_SIZE);
+          scaleFactor: min(stackWidth, stackHeight) / HandDetection.IMAGE_SIZE);
       if (handLandmarks!.hasPoints()) {
         updateGesture(handLandmarks!.getRecognition());
       } else {
@@ -213,15 +230,26 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     if (!widget.showLandmarkPoints || handLandmarks == null) {
       return Container();
     }
-    return handLandmarks!.build();
+
+    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
+    return handLandmarks!.build(stackWidth, stackHeight);
   }
 
   Widget drawDebugPicture() {
     if (!widget.showDebugImage || image == null) {
       return Container();
     }
+
+    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
     return Container(
-      margin: const EdgeInsets.only(top: 120.0),
+      width: stackWidth,
+      height: stackHeight,
       child: image!,
     );
   }

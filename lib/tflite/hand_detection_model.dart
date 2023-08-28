@@ -34,8 +34,8 @@ class HandDetection {
   void loadImageProcessor() {
     imageProcessor = ImageProcessorBuilder()
         .add(QuantizeOp(0, 255))
-        //.add(ResizeOp(IMAGE_SIZE, IMAGE_SIZE, ResizeMethod.NEAREST_NEIGHBOUR))
-        //.add(ResizeWithCropOrPadOp(IMAGE_SIZE, IMAGE_SIZE))
+        // .add(ResizeOp(IMAGE_SIZE, IMAGE_SIZE, ResizeMethod.NEAREST_NEIGHBOUR))
+        // .add(ResizeWithCropOrPadOp(IMAGE_SIZE, IMAGE_SIZE))
         .build();
   }
 

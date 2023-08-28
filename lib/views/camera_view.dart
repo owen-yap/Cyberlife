@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
+import 'package:cyberlife/utils/image_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:cyberlife/tflite/hand_detection_model.dart';
 import 'package:cyberlife/utils/isolate_utils.dart';
+import 'package:image/image.dart' as imageLib;
 // import 'package:gallery_saver/gallery_saver.dart';
 // import 'package:image_picker/image_picker.dart';
 
@@ -13,6 +16,7 @@ import 'package:cyberlife/utils/isolate_utils.dart';
 // import 'dart:typed_data';
 // import 'package:camera/camera.dart';
 // import 'package:path/path.dart' as p;
+
 
 
 class CameraView extends StatefulWidget {
@@ -85,52 +89,11 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     });
   }
 
-//   img.Image convertCameraImage(CameraImage cameraImage) {
-//   // Convert CameraImage to Image using the image package
-//   // You might need to handle different formats (YUV, BGRA, etc.)
-//   // This example assumes the image is in the BGRA8888 format
-//   ImageFormat format = cameraImage.format;
-
-//   print('Image format: $format');
-//   final img.Image result_img = img.Image.fromBytes(
-//     width: cameraImage.width,
-//     height: cameraImage.height,
-//     bytes: cameraImage.planes[0].bytes.buffer,
-//     format: img.Format.float64
-//   );
-//   return result_img;
-// }
-
-// Future<String> saveImageLocally(img.Image image) async {
-//   final Directory appDirectory = await getApplicationDocumentsDirectory();
-//   final String imagePath = p.join(appDirectory.path, 'image_${DateTime.now()}.jpg');
-
-//   // Encode the image as JPEG and save it to the file
-//   final List<int> jpeg = img.encodeJpg(image);
-//   await File(imagePath).writeAsBytes(jpeg);
-
-//   return imagePath;
-// }
-
-// void saveImageLocally(img.Image image) async {
-//   ImagePicker().pickImage(source: ImageSource.camera)
-//         .then((File recordedImage) {
-//       if (recordedImage != null && recordedImage.path != null) {
-
-//         GallerySaver.saveImage(recordedImage.path).then((String path) {
-//           print(path);
-//         });
-//       }
-//     });
-// }
-
   void onLatestImageAvailable(CameraImage cameraImage) async {
     if (processing || handDetector.interpreter == null || !mounted) {
       return;
     }
 
-    // final img.Image image = convertCameraImage(cameraImage);
-    // saveImageLocally(image);
 
     setState(() {
       processing = true;
@@ -145,14 +108,12 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     widget.pointsCallback(
         pointList, cameraImage.width, cameraImage.height, handedness);
 
-    print(results["landmarks"].length);
-
     //debug for printing image
 
-    /*imageLib.Image debugImage = ImageUtils.convertCameraImage(cameraImage);
-    //debugImage = imageLib.copyResizeCropSquare(debugImage, 224);
+    imageLib.Image debugImage = ImageUtils.convertCameraImage(cameraImage);
+    // debugImage = imageLib.copyResizeCropSquare(debugImage, size:224);
     widget.imageCallback(Image.memory(
-        imageLib.encodeJpg(debugImage) as Uint8List));*/
+        imageLib.encodeJpg(debugImage)));
 
     await Future.delayed(Duration(milliseconds: 66));
 
@@ -165,6 +126,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       processing = false;
     });
   }
+
 
   /// Runs inference in another isolate
   Future<Map<String, dynamic>> inference(IsolateData isolateData) async {

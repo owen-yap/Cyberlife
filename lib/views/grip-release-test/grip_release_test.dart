@@ -33,21 +33,13 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
 
   double totalTestTime = 10;
 
-  late double timeLeft;
   int numOpenClose = 0;
   bool hasStarted = false;
   bool testComplete = false;
   HandState previousHandState = HandState.UNSET;
-  Timer? timer;
 
-  final GlobalKey _stackKey = GlobalKey(debugLabel: "grip_release_camera_view_stack");
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    timeLeft = totalTestTime;
-  }
+  final GlobalKey _stackKey =
+      GlobalKey(debugLabel: "grip_release_camera_view_stack");
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +91,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
                                   : const MaterialStatePropertyAll(
                                       AppTheme.lightGreen),
                             ),
-                    onPressed: hasStarted ? endTest : startTest,
+                    onPressed: hasStarted ? cancelTest : startTest,
                     child: Text(hasStarted
                         ? "Cancel"
                         : testComplete
@@ -137,29 +129,28 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
 
   Widget displayTestStatus() {
     bool shouldTimerRun = hasStarted && !testComplete;
-    print(shouldTimerRun);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Time", style: AppTheme.displaySmall),
-          const Text("Left", style: AppTheme.displaySmall),
-          const SizedBox(height: 16),
-          TimerCircle(running: shouldTimerRun, totalTestTime: totalTestTime)
-        ],
-      ),
-      Column(
-        children: [
-          const Text("Number of", style: AppTheme.displaySmall),
-          const Text("Fists Made", style: AppTheme.displaySmall),
-          const SizedBox(height: 16),
-          Text("$numOpenClose", style: AppTheme.displayMedium),
-        ],
-      ),
-    ]);
+          Column(
+            children: [
+              const Text("Time", style: AppTheme.displaySmall),
+              const Text("Left", style: AppTheme.displaySmall),
+              const SizedBox(height: 16),
+              TimerCircle(running: shouldTimerRun, totalTestTime: totalTestTime, endTimerCallback: completeTestTimerCallback,)
+            ],
+          ),
+          Column(
+            children: [
+              const Text("Number of", style: AppTheme.displaySmall),
+              const Text("Fists Made", style: AppTheme.displaySmall),
+              const SizedBox(height: 16),
+              Text("$numOpenClose", style: AppTheme.displayMedium),
+            ],
+          ),
+        ]);
   }
 
   Widget displayHandDetectionStatus() {
@@ -188,42 +179,31 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   }
 
   // Logic Functions -----------------------------------------------------------------------------------------
-
+  
   void startTest() {
-    // Defensive call to end test, in case timer is still running
-    endTest();
-
-    int periodInMs = 100;
-    double periodInSecs = periodInMs / 1000;
-
-    timer = Timer.periodic(Duration(milliseconds: periodInMs), (timer) {
-      if (timeLeft <= 0) {
-        setState(() {
-          endTest();
-          timeLeft = 0;
-          testComplete = true;
-        });
-      } else {
-        setState(() {
-          timeLeft -= periodInSecs;
-        });
-      }
-    });
-
-    hasStarted = true;
-    testComplete = false;
     setState(() {
       numOpenClose = 0;
-      timeLeft = totalTestTime;
+      hasStarted = true;
+      testComplete = false;
     });
   }
 
-  void endTest() {
+  void completeTestTimerCallback(Timer timer) {
     setState(() {
       hasStarted = false;
+      testComplete = true;
     });
-    timer?.cancel();
   }
+
+  void cancelTest() {
+    setState(() {
+      numOpenClose = 0;
+      hasStarted = false;
+      testComplete = false;
+    });
+  }
+
+  // Camera View Callbacks -----------------------------------------------------------------------------------------
 
   void imageCallback(Image image) {
     if (!mounted) {
@@ -240,7 +220,8 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       return;
     }
 
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
     final stackWidth = renderBox.size.width;
     final stackHeight = renderBox.size.height;
 
@@ -273,12 +254,15 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     }
   }
 
+  // Debug UI Functions ------------------------------------------------------------------------------------------
+
   Widget drawLandmark() {
     if (!widget.showLandmarkPoints || handLandmarks == null) {
       return Container();
     }
 
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
     final stackWidth = renderBox.size.width;
     final stackHeight = renderBox.size.height;
 
@@ -290,7 +274,8 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       return Container();
     }
 
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
     final stackWidth = renderBox.size.width;
     final stackHeight = renderBox.size.height;
 
@@ -301,18 +286,4 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     );
   }
 
-  Widget displayGesture() {
-    if (gesture == null) {
-      return const Text("No hand detected!");
-    }
-    return Text(gesture.toString());
-  }
-
-  @override
-  void dispose() {
-    if (timer != null) {
-      timer!.cancel();
-    }
-    super.dispose();
-  }
 }

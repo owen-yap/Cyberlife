@@ -15,7 +15,7 @@ class StopwatchCircle extends StatefulWidget {
 }
 
 class _StopwatchCircleState extends State<StopwatchCircle> {
-  Stopwatch _stopwatch = Stopwatch();
+  final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
   double _progress = 0.0;
 

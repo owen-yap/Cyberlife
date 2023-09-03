@@ -8,8 +8,15 @@ class TimerCircle extends StatefulWidget {
   double totalTestTime;
   double width;
   double height;
+  void Function(Timer) endTimerCallback;
 
-  TimerCircle({super.key, required this.running, required this.totalTestTime, this.width = 50, this.height = 50});
+  TimerCircle(
+      {super.key,
+      required this.running,
+      required this.totalTestTime,
+      this.width = 50,
+      this.height = 50,
+      required this.endTimerCallback});
 
   @override
   _TimerCircleState createState() => _TimerCircleState();
@@ -52,6 +59,7 @@ class _TimerCircleState extends State<TimerCircle> {
 
     timer = Timer.periodic(Duration(milliseconds: periodInMs), (timer) {
       if (timeLeft <= 0) {
+        widget.endTimerCallback(timer);
         stopTimer();
       } else {
         setState(() {

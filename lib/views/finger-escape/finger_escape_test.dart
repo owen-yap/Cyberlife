@@ -33,7 +33,7 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
 
   int testTotalTime = 10;
 
-  int timeLeft = 0;
+  late int timeLeft;
   bool hasStarted = false;
   bool testComplete = false;
   double supinationDegree = 0;
@@ -42,6 +42,13 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
   Timer? timer;
 
   final GlobalKey _stackKey = GlobalKey(debugLabel: "finger_escape_camera_view_stack");
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    timeLeft = testTotalTime;
+  }
 
   @override
   Widget build(BuildContext context) {

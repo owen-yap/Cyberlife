@@ -30,9 +30,9 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   Image? image;
   Gestures? gesture;
 
-  int test_total_time = 10;
+  int totalTestTime = 10;
 
-  int timeLeft = 0;
+  late int timeLeft;
   int numOpenClose = 0;
   bool hasStarted = false;
   bool testComplete = false;
@@ -40,6 +40,13 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   Timer? timer;
 
   final GlobalKey _stackKey = GlobalKey(debugLabel: "grip_release_camera_view_stack");
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    timeLeft = totalTestTime;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +174,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     testComplete = false;
     setState(() {
       numOpenClose = 0;
-      timeLeft = test_total_time;
+      timeLeft = totalTestTime;
     });
   }
 

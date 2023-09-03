@@ -133,7 +133,12 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     );
   }
 
+  // UI Functions -----------------------------------------------------------------------------------------
+
   Widget displayTestStatus() {
+    bool shouldTimerRun = hasStarted && !testComplete;
+    print(shouldTimerRun);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,11 +148,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
           const Text("Time", style: AppTheme.displaySmall),
           const Text("Left", style: AppTheme.displaySmall),
           const SizedBox(height: 16),
-          CustomPaint(
-            painter: TimerCirclePainter(progress: 1 - timeLeft / totalTestTime, timeLeft: timeLeft),
-            size: const Size(50, 50),
-          )
-          // Text("$timeLeft", style: AppTheme.displayMedium),
+          TimerCircle(running: shouldTimerRun, totalTestTime: totalTestTime)
         ],
       ),
       Column(
@@ -160,6 +161,33 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       ),
     ]);
   }
+
+  Widget displayHandDetectionStatus() {
+    Icon isHandDetected;
+    if (gesture == null) {
+      isHandDetected = const Icon(
+        Icons.clear,
+        size: 50.0, // Adjust the size as needed
+        color: AppTheme.lightRed, // Adjust the color as needed
+      );
+    } else {
+      isHandDetected = const Icon(
+        Icons.check,
+        size: 50.0, // Adjust the size as needed
+        color: AppTheme.lightGreen, // Adjust the color as needed
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Hand detected?"),
+        const SizedBox(width: 32),
+        isHandDetected
+      ],
+    );
+  }
+
+  // Logic Functions -----------------------------------------------------------------------------------------
 
   void startTest() {
     // Defensive call to end test, in case timer is still running
@@ -278,31 +306,6 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       return const Text("No hand detected!");
     }
     return Text(gesture.toString());
-  }
-
-  Widget displayHandDetectionStatus() {
-    Icon isHandDetected;
-    if (gesture == null) {
-      isHandDetected = const Icon(
-        Icons.clear,
-        size: 50.0, // Adjust the size as needed
-        color: AppTheme.lightRed, // Adjust the color as needed
-      );
-    } else {
-      isHandDetected = const Icon(
-        Icons.check,
-        size: 50.0, // Adjust the size as needed
-        color: AppTheme.lightGreen, // Adjust the color as needed
-      );
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Hand detected?"),
-        const SizedBox(width: 32),
-        isHandDetected
-      ],
-    );
   }
 
   @override

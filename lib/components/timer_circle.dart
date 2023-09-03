@@ -3,6 +3,88 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
 
+class TimerCircle extends StatefulWidget {
+  final bool running;
+  double totalTestTime;
+  double width;
+  double height;
+
+  TimerCircle({super.key, required this.running, required this.totalTestTime, this.width = 50, this.height = 50});
+
+  @override
+  _TimerCircleState createState() => _TimerCircleState();
+}
+
+class _TimerCircleState extends State<TimerCircle> {
+  late Timer timer;
+  late double timeLeft;
+
+  @override
+  void initState() {
+    super.initState();
+    timeLeft = widget.totalTestTime;
+    if (widget.running) {
+      startTimer();
+    }
+  }
+
+  @override
+  void didUpdateWidget(TimerCircle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.running != oldWidget.running) {
+      if (widget.running) {
+        startTimer();
+      } else {
+        resetTimer();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  void startTimer() {
+    int periodInMs = 100;
+    double periodInSecs = periodInMs / 1000;
+
+    timer = Timer.periodic(Duration(milliseconds: periodInMs), (timer) {
+      if (timeLeft <= 0) {
+        stopTimer();
+      } else {
+        setState(() {
+          timeLeft -= periodInSecs;
+        });
+      }
+    });
+  }
+
+  void stopTimer() {
+    setState(() {
+      timeLeft = 0;
+    });
+    timer.cancel();
+  }
+
+  void resetTimer() {
+    stopTimer();
+    setState(() {
+      timeLeft = widget.totalTestTime;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: TimerCirclePainter(
+          progress: 1 - timeLeft / widget.totalTestTime, timeLeft: timeLeft),
+      size: Size(widget.width, widget.height),
+    );
+  }
+}
+
 class TimerCirclePainter extends CustomPainter {
   final double progress;
   double timeLeft;
@@ -30,7 +112,7 @@ class TimerCirclePainter extends CustomPainter {
     final progressAngle = 2 * pi * (progress - 1);
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
-      - pi / 2,
+      -pi / 2,
       progressAngle,
       false,
       progressPaint,

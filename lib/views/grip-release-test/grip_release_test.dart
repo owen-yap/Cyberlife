@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:async';
 
+import 'package:cyberlife/components/timer_circle.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/views/grip-release-test/grip_release_results.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +31,9 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   Image? image;
   Gestures? gesture;
 
-  int totalTestTime = 10;
+  double totalTestTime = 10;
 
-  late int timeLeft;
+  late double timeLeft;
   int numOpenClose = 0;
   bool hasStarted = false;
   bool testComplete = false;
@@ -81,7 +82,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
                 )),
             displayHandDetectionStatus(),
             const SizedBox(height: 32),
-            generateStats(),
+            displayTestStatus(),
             const SizedBox(height: 32),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,14 +133,21 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     );
   }
 
-  Widget generateStats() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+  Widget displayTestStatus() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
       Column(
         children: [
           const Text("Time", style: AppTheme.displaySmall),
           const Text("Left", style: AppTheme.displaySmall),
           const SizedBox(height: 16),
-          Text("$timeLeft", style: AppTheme.displayMedium),
+          CustomPaint(
+            painter: TimerCirclePainter(progress: 1 - timeLeft / totalTestTime, timeLeft: timeLeft),
+            size: const Size(50, 50),
+          )
+          // Text("$timeLeft", style: AppTheme.displayMedium),
         ],
       ),
       Column(
@@ -154,18 +162,22 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   }
 
   void startTest() {
-    // Defensive call to end test, in case timr is still running
+    // Defensive call to end test, in case timer is still running
     endTest();
 
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timeLeft == 0) {
+    int periodInMs = 100;
+    double periodInSecs = periodInMs / 1000;
+
+    timer = Timer.periodic(Duration(milliseconds: periodInMs), (timer) {
+      if (timeLeft <= 0) {
         setState(() {
           endTest();
+          timeLeft = 0;
           testComplete = true;
         });
       } else {
         setState(() {
-          timeLeft--;
+          timeLeft -= periodInSecs;
         });
       }
     });

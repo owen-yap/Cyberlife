@@ -28,7 +28,7 @@ class CameraView extends StatefulWidget {
 }
 
 class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
-  late CameraController cameraController;
+  CameraController? cameraController;
   late List<CameraDescription> cameras;
   late String err;
   late HandDetection handDetector;
@@ -66,8 +66,8 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
     cameras = await availableCameras();
     cameraController = CameraController(cameras[0], ResolutionPreset.medium,
         enableAudio: false);
-    cameraController.initialize().then((_) async {
-      await cameraController.startImageStream(onLatestImageAvailable);
+    cameraController?.initialize().then((_) async {
+      await cameraController?.startImageStream(onLatestImageAvailable);
       if (!mounted) {
         return;
       }
@@ -130,14 +130,18 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    cameraController.dispose();
+    cameraController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     try {
-      if (!cameraController.value.isInitialized) {
+      if (cameraController == null) {
+        return const Text("Camera Loading!");
+      }
+
+      if (!cameraController!.value.isInitialized) {
         return Text(err);
       }
     } catch (e) {
@@ -148,11 +152,11 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
       aspectRatio: 1,
       child: ClipRect(
         child: Transform.scale(
-          scale: cameraController.value.aspectRatio,
+          scale: cameraController?.value.aspectRatio,
           child: Center(
             child: AspectRatio(
-              aspectRatio: 1 / cameraController.value.aspectRatio,
-              child: CameraPreview(cameraController),
+              aspectRatio: 1 / cameraController!.value.aspectRatio,
+              child: CameraPreview(cameraController!),
             ),
           ),
         ),

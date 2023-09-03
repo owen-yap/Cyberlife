@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:async';
 
-import 'package:cyberlife/components/timer_circle.dart';
+import 'package:cyberlife/components/time/timer_circle.dart';
 import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/views/finger-escape/finger_escape_results.dart';

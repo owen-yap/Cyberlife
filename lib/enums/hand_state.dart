@@ -1,0 +1,1 @@
+enum HandState { UNSET, OPEN, CLOSE }

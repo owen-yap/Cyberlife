@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:async';
 
 import 'package:cyberlife/components/timer_circle.dart';
+import 'package:cyberlife/enums/hand_state.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/views/grip-release-test/grip_release_results.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +24,6 @@ class GripReleaseTest extends StatefulWidget {
   @override
   _GripReleaseTestState createState() => _GripReleaseTestState();
 }
-
-enum HandState { UNSET, OPEN, CLOSE }
 
 class _GripReleaseTestState extends State<GripReleaseTest> {
   HandLandmarks? handLandmarks;
@@ -139,7 +138,11 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
               const Text("Time", style: AppTheme.displaySmall),
               const Text("Left", style: AppTheme.displaySmall),
               const SizedBox(height: 16),
-              TimerCircle(running: shouldTimerRun, totalTestTime: totalTestTime, endTimerCallback: completeTestTimerCallback,)
+              TimerCircle(
+                running: shouldTimerRun,
+                totalTestTime: totalTestTime,
+                endTimerCallback: completeTestTimerCallback,
+              )
             ],
           ),
           Column(
@@ -154,15 +157,15 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
   }
 
   Widget displayHandDetectionStatus() {
-    Icon isHandDetected;
+    Icon isHandDetectedIcon;
     if (gesture == null) {
-      isHandDetected = const Icon(
+      isHandDetectedIcon = const Icon(
         Icons.clear,
         size: 50.0, // Adjust the size as needed
         color: AppTheme.lightRed, // Adjust the color as needed
       );
     } else {
-      isHandDetected = const Icon(
+      isHandDetectedIcon = const Icon(
         Icons.check,
         size: 50.0, // Adjust the size as needed
         color: AppTheme.lightGreen, // Adjust the color as needed
@@ -173,13 +176,13 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       children: [
         const Text("Hand detected?"),
         const SizedBox(width: 32),
-        isHandDetected
+        isHandDetectedIcon
       ],
     );
   }
 
   // Logic Functions -----------------------------------------------------------------------------------------
-  
+
   void startTest() {
     setState(() {
       numOpenClose = 0;
@@ -285,5 +288,4 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       child: image!,
     );
   }
-
 }

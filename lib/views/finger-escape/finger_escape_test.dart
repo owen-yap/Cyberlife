@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:async';
 
+import 'package:cyberlife/components/timer_circle.dart';
 import 'package:cyberlife/models/angle_list.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/views/finger-escape/finger_escape_results.dart';
@@ -13,7 +14,7 @@ import 'package:cyberlife/utils/hand_gesture_recognition.dart';
 import 'package:cyberlife/widgets/appbar.dart';
 
 class FingerEscapeTest extends StatefulWidget {
-  final String title = "Grip Release Test";
+  final String title = "Finger Escape Test";
 
   final bool showDebugImage = false;
   final bool showLandmarkPoints = false;
@@ -24,31 +25,21 @@ class FingerEscapeTest extends StatefulWidget {
   _FingerEscapeTestState createState() => _FingerEscapeTestState();
 }
 
-enum HandState { UNSET, OPEN, CLOSE }
-
 class _FingerEscapeTestState extends State<FingerEscapeTest> {
   HandLandmarks? handLandmarks;
   Image? image;
   Gestures? gesture;
 
-  int testTotalTime = 10;
+  double totalTestTime = 10;
 
-  late int timeLeft;
   bool hasStarted = false;
   bool testComplete = false;
   double supinationDegree = 0;
   double maxSupinationDegree = 0;
   AngleList supinationAngleList = AngleList();
-  Timer? timer;
 
-  final GlobalKey _stackKey = GlobalKey(debugLabel: "finger_escape_camera_view_stack");
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    timeLeft = testTotalTime;
-  }
+  final GlobalKey _stackKey =
+      GlobalKey(debugLabel: "finger_escape_camera_view_stack");
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +54,9 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
-              child: LayoutBuilder(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 32),
+                child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     // Retrieve the width and height of the Stack using the key
                     return Stack(
@@ -81,9 +73,11 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
                   },
                 )),
             displayHandDetectionStatus(),
-            const SizedBox(height: 32),
-            generateStats(),
-            const SizedBox(height: 32),
+            const SizedBox(height: 8),
+            displayFingersClosedStatus(),
+            const SizedBox(height: 16),
+            displayTestStatus(),
+            const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               // mainAxisSize: MainAxisSize.max,
@@ -99,7 +93,7 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
                                   : const MaterialStatePropertyAll(
                                       AppTheme.lightGreen),
                             ),
-                    onPressed: hasStarted ? endTest : startTest,
+                    onPressed: hasStarted ? cancelTest : startTest,
                     child: Text(hasStarted
                         ? "Cancel"
                         : testComplete
@@ -133,138 +127,24 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
     );
   }
 
-  Widget generateStats() {
+  // UI Functions -----------------------------------------------------------------------------------------
+
+  Widget displayTestStatus() {
+    bool shouldTimerRun = hasStarted && !testComplete;
+
     return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-      Column(
+      const Column(
         children: [
-          const Text("Time", style: AppTheme.displaySmall),
-          const Text("Left", style: AppTheme.displaySmall),
-          const SizedBox(height: 16),
-          Text("$timeLeft", style: AppTheme.displayMedium),
+          Text("Time", style: AppTheme.displaySmall),
+          Text("Left", style: AppTheme.displaySmall),
         ],
       ),
+      TimerCircle(
+        running: shouldTimerRun,
+        totalTestTime: totalTestTime,
+        endTimerCallback: completeTestTimerCallback,
+      )
     ]);
-  }
-
-  void startTest() {
-    // Defensive call to end test, in case timer is still running
-    endTest();
-
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timeLeft == 0) {
-        setState(() {
-          endTest();
-          testComplete = true;
-        });
-      } else {
-        setState(() {
-          timeLeft--;
-        });
-      }
-    });
-
-    hasStarted = true;
-    testComplete = false;
-    setState(() {
-      supinationDegree = 0;
-      maxSupinationDegree = 0;
-      supinationAngleList = AngleList();
-      timeLeft = testTotalTime;
-    });
-  }
-
-  void endTest() {
-    setState(() {
-      hasStarted = false;
-    });
-    timer?.cancel();
-  }
-
-  void imageCallback(Image image) {
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      this.image = image;
-    });
-  }
-
-  void pointsCallback(
-      List<double> points, int width, int height, bool handedness) {
-    if (!mounted) {
-      return;
-    }
-
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
-    final stackWidth = renderBox.size.width;
-    final stackHeight = renderBox.size.height;
-
-    setState(() {
-      handLandmarks = HandLandmarks(
-          handedness: handedness,
-          landmarkList: points,
-          scaleFactor: min(stackWidth, stackHeight) / HandDetection.IMAGE_SIZE);
-      if (handLandmarks!.hasPoints()) {
-        gesture = handLandmarks!.getRecognition();
-        calculateSupination();
-      } else {
-        gesture = null;
-      }
-      supinationAngleList.add(supinationDegree);
-    });
-  }
-
-  void calculateSupination() {
-    if (!isHandReady() || !hasStarted) {
-      return;
-    }
-
-    supinationDegree = handLandmarks!.getPinkySupination();
-    maxSupinationDegree = max(supinationDegree, maxSupinationDegree);
-  }
-
-  bool isHandReady() {
-    if (gesture != Gestures.FOUR && gesture != Gestures.FIVE) {
-      return false;
-    } else if (!handLandmarks!.areFingersClosed()) {
-      return false;
-    }
-    return true;
-  }
-
-  Widget drawLandmark() {
-    if (!widget.showLandmarkPoints || handLandmarks == null) {
-      return Container();
-    }
-    
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
-    final stackWidth = renderBox.size.width;
-    final stackHeight = renderBox.size.height;
-
-    return handLandmarks!.build(stackWidth, stackHeight);
-  }
-
-  Widget drawDebugPicture() {
-    if (!widget.showDebugImage || image == null) {
-      return Container();
-    }
-    
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
-    final stackWidth = renderBox.size.width;
-    final stackHeight = renderBox.size.height;
-
-    return Container(
-      width: stackWidth,
-      height: stackHeight,
-      child: image!,
-    );
-  }
-
-  Widget displayGesture() {
-    if (gesture == null) {
-      return const Text("No hand detected!");
-    }
-    return Text(gesture.toString());
   }
 
   Widget displayHandDetectionStatus() {
@@ -317,11 +197,119 @@ class _FingerEscapeTestState extends State<FingerEscapeTest> {
     );
   }
 
-  @override
-  void dispose() {
-    if (timer != null) {
-      timer!.cancel();
+  // Logic Functions -----------------------------------------------------------------------------------------
+
+  void startTest() {
+    setState(() {
+      supinationDegree = 0;
+      maxSupinationDegree = 0;
+      supinationAngleList = AngleList();
+      hasStarted = true;
+      testComplete = false;
+    });
+  }
+
+  void completeTestTimerCallback(Timer timer) {
+    setState(() {
+      hasStarted = false;
+      testComplete = true;
+    });
+  }
+
+  void cancelTest() {
+    setState(() {
+      supinationDegree = 0;
+      maxSupinationDegree = 0;
+      supinationAngleList = AngleList();
+      hasStarted = false;
+      testComplete = false;
+    });
+  }
+
+  // Camera View Callbacks -----------------------------------------------------------------------------------------
+
+  void imageCallback(Image image) {
+    if (!mounted) {
+      return;
     }
-    super.dispose();
+    setState(() {
+      this.image = image;
+    });
+  }
+
+  void pointsCallback(
+      List<double> points, int width, int height, bool handedness) {
+    if (!mounted) {
+      return;
+    }
+
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
+    setState(() {
+      handLandmarks = HandLandmarks(
+          handedness: handedness,
+          landmarkList: points,
+          scaleFactor: min(stackWidth, stackHeight) / HandDetection.IMAGE_SIZE);
+      if (handLandmarks!.hasPoints()) {
+        gesture = handLandmarks!.getRecognition();
+        calculateSupination();
+      } else {
+        gesture = null;
+      }
+      supinationAngleList.add(supinationDegree);
+    });
+  }
+
+  void calculateSupination() {
+    if (!isHandReady() || !hasStarted) {
+      return;
+    }
+
+    supinationDegree = handLandmarks!.getPinkySupination();
+    maxSupinationDegree = max(supinationDegree, maxSupinationDegree);
+  }
+
+  bool isHandReady() {
+    if (gesture != Gestures.FOUR && gesture != Gestures.FIVE) {
+      return false;
+    } else if (!handLandmarks!.areFingersClosed()) {
+      return false;
+    }
+    return true;
+  }
+
+  // Debug UI Functions ------------------------------------------------------------------------------------------
+
+  Widget drawLandmark() {
+    if (!widget.showLandmarkPoints || handLandmarks == null) {
+      return Container();
+    }
+
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
+    return handLandmarks!.build(stackWidth, stackHeight);
+  }
+
+  Widget drawDebugPicture() {
+    if (!widget.showDebugImage || image == null) {
+      return Container();
+    }
+
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final stackWidth = renderBox.size.width;
+    final stackHeight = renderBox.size.height;
+
+    return Container(
+      width: stackWidth,
+      height: stackHeight,
+      child: image!,
+    );
   }
 }

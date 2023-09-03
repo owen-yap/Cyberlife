@@ -23,7 +23,7 @@ class TimerCircle extends StatefulWidget {
 }
 
 class _TimerCircleState extends State<TimerCircle> {
-  late Timer timer;
+  Timer? timer;
   late double timeLeft;
 
   @override
@@ -49,7 +49,7 @@ class _TimerCircleState extends State<TimerCircle> {
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -73,7 +73,7 @@ class _TimerCircleState extends State<TimerCircle> {
     setState(() {
       timeLeft = 0;
     });
-    timer.cancel();
+    timer?.cancel();
   }
 
   void resetTimer() {

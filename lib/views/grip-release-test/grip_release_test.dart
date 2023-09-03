@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:async';
 
+import 'package:cyberlife/components/time/timer_circle.dart';
+import 'package:cyberlife/enums/hand_state.dart';
 import 'package:cyberlife/theme.dart';
 import 'package:cyberlife/views/grip-release-test/grip_release_results.dart';
 import 'package:flutter/material.dart';
@@ -23,23 +25,20 @@ class GripReleaseTest extends StatefulWidget {
   _GripReleaseTestState createState() => _GripReleaseTestState();
 }
 
-enum HandState { UNSET, OPEN, CLOSE }
-
 class _GripReleaseTestState extends State<GripReleaseTest> {
   HandLandmarks? handLandmarks;
   Image? image;
   Gestures? gesture;
 
-  int test_total_time = 10;
+  double totalTestTime = 10;
 
-  int timeLeft = 0;
   int numOpenClose = 0;
   bool hasStarted = false;
   bool testComplete = false;
   HandState previousHandState = HandState.UNSET;
-  Timer? timer;
 
-  final GlobalKey _stackKey = GlobalKey(debugLabel: "grip_release_camera_view_stack");
+  final GlobalKey _stackKey =
+      GlobalKey(debugLabel: "grip_release_camera_view_stack");
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +73,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
                 )),
             displayHandDetectionStatus(),
             const SizedBox(height: 32),
-            generateStats(),
+            displayTestStatus(),
             const SizedBox(height: 32),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -91,7 +90,7 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
                                   : const MaterialStatePropertyAll(
                                       AppTheme.lightGreen),
                             ),
-                    onPressed: hasStarted ? endTest : startTest,
+                    onPressed: hasStarted ? cancelTest : startTest,
                     child: Text(hasStarted
                         ? "Cancel"
                         : testComplete
@@ -125,58 +124,89 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     );
   }
 
-  Widget generateStats() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-      Column(
+  // UI Functions -----------------------------------------------------------------------------------------
+
+  Widget displayTestStatus() {
+    bool shouldTimerRun = hasStarted && !testComplete;
+
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Time", style: AppTheme.displaySmall),
-          const Text("Left", style: AppTheme.displaySmall),
-          const SizedBox(height: 16),
-          Text("$timeLeft", style: AppTheme.displayMedium),
-        ],
-      ),
-      Column(
-        children: [
-          const Text("Number of", style: AppTheme.displaySmall),
-          const Text("Fists Made", style: AppTheme.displaySmall),
-          const SizedBox(height: 16),
-          Text("$numOpenClose", style: AppTheme.displayMedium),
-        ],
-      ),
-    ]);
+          Column(
+            children: [
+              const Text("Time", style: AppTheme.displaySmall),
+              const Text("Left", style: AppTheme.displaySmall),
+              const SizedBox(height: 16),
+              TimerCircle(
+                running: shouldTimerRun,
+                totalTestTime: totalTestTime,
+                endTimerCallback: completeTestTimerCallback,
+              )
+            ],
+          ),
+          Column(
+            children: [
+              const Text("Number of", style: AppTheme.displaySmall),
+              const Text("Fists Made", style: AppTheme.displaySmall),
+              const SizedBox(height: 16),
+              Text("$numOpenClose", style: AppTheme.displayMedium),
+            ],
+          ),
+        ]);
   }
+
+  Widget displayHandDetectionStatus() {
+    Icon isHandDetectedIcon;
+    if (gesture == null) {
+      isHandDetectedIcon = const Icon(
+        Icons.clear,
+        size: 50.0, // Adjust the size as needed
+        color: AppTheme.lightRed, // Adjust the color as needed
+      );
+    } else {
+      isHandDetectedIcon = const Icon(
+        Icons.check,
+        size: 50.0, // Adjust the size as needed
+        color: AppTheme.lightGreen, // Adjust the color as needed
+      );
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Hand detected?"),
+        const SizedBox(width: 32),
+        isHandDetectedIcon
+      ],
+    );
+  }
+
+  // Logic Functions -----------------------------------------------------------------------------------------
 
   void startTest() {
-    // Defensive call to end test, in case timr is still running
-    endTest();
-
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (timeLeft == 0) {
-        setState(() {
-          endTest();
-          testComplete = true;
-        });
-      } else {
-        setState(() {
-          timeLeft--;
-        });
-      }
-    });
-
-    hasStarted = true;
-    testComplete = false;
     setState(() {
       numOpenClose = 0;
-      timeLeft = test_total_time;
+      hasStarted = true;
+      testComplete = false;
     });
   }
 
-  void endTest() {
+  void completeTestTimerCallback(Timer timer) {
     setState(() {
       hasStarted = false;
+      testComplete = true;
     });
-    timer?.cancel();
   }
+
+  void cancelTest() {
+    setState(() {
+      numOpenClose = 0;
+      hasStarted = false;
+      testComplete = false;
+    });
+  }
+
+  // Camera View Callbacks -----------------------------------------------------------------------------------------
 
   void imageCallback(Image image) {
     if (!mounted) {
@@ -193,7 +223,8 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       return;
     }
 
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
     final stackWidth = renderBox.size.width;
     final stackHeight = renderBox.size.height;
 
@@ -226,12 +257,15 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
     }
   }
 
+  // Debug UI Functions ------------------------------------------------------------------------------------------
+
   Widget drawLandmark() {
     if (!widget.showLandmarkPoints || handLandmarks == null) {
       return Container();
     }
 
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
     final stackWidth = renderBox.size.width;
     final stackHeight = renderBox.size.height;
 
@@ -243,7 +277,8 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       return Container();
     }
 
-    final RenderBox renderBox = _stackKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        _stackKey.currentContext!.findRenderObject() as RenderBox;
     final stackWidth = renderBox.size.width;
     final stackHeight = renderBox.size.height;
 
@@ -252,45 +287,5 @@ class _GripReleaseTestState extends State<GripReleaseTest> {
       height: stackHeight,
       child: image!,
     );
-  }
-
-  Widget displayGesture() {
-    if (gesture == null) {
-      return const Text("No hand detected!");
-    }
-    return Text(gesture.toString());
-  }
-
-  Widget displayHandDetectionStatus() {
-    Icon isHandDetected;
-    if (gesture == null) {
-      isHandDetected = const Icon(
-        Icons.clear,
-        size: 50.0, // Adjust the size as needed
-        color: AppTheme.lightRed, // Adjust the color as needed
-      );
-    } else {
-      isHandDetected = const Icon(
-        Icons.check,
-        size: 50.0, // Adjust the size as needed
-        color: AppTheme.lightGreen, // Adjust the color as needed
-      );
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text("Hand detected?"),
-        const SizedBox(width: 32),
-        isHandDetected
-      ],
-    );
-  }
-
-  @override
-  void dispose() {
-    if (timer != null) {
-      timer!.cancel();
-    }
-    super.dispose();
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:cyberlife/components/stopwatch_circle.dart';
+import 'package:cyberlife/components/time/stopwatch_circle.dart';
 import 'package:cyberlife/constants/strings.dart';
 import 'package:cyberlife/enums/joint_motor_function/joints.dart';
 import 'package:cyberlife/models/app_state.dart';
